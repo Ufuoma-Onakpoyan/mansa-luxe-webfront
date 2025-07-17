@@ -1,5 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import testimonial1 from "../assets/testimonial-1.jpg";
+import testimonial2 from "../assets/testimonial-2.jpg";
+import testimonial3 from "../assets/testimonial-3.jpg";
+import testimonial4 from "../assets/testimonial-4.jpg";
+import testimonial5 from "../assets/testimonial-5.jpg";
 
 const Testimonials = () => {
   const testimonials = [
@@ -7,7 +12,7 @@ const Testimonials = () => {
       id: 1,
       name: "Dr. Chioma Okafor",
       position: "Medical Director, Lagos University Teaching Hospital",
-      image: "/api/placeholder/150/150", // TODO: Replace with actual client photos
+      image: testimonial1,
       rating: 5,
       quote: "MansaLuxeRealty helped us find our dream home in Victoria Island. Their professionalism and attention to detail throughout the entire process was exceptional. They truly understand the luxury market in Lagos.",
       location: "Victoria Island Property Purchase",
@@ -17,7 +22,7 @@ const Testimonials = () => {
       id: 2,
       name: "Alhaji Musa Ibrahim",
       position: "CEO, Northern Star Holdings",
-      image: "/api/placeholder/150/150", // TODO: Replace with actual client photos
+      image: testimonial2,
       rating: 5,
       quote: "Working with MansaLuxeRealty was a game-changer for our corporate housing needs. They provided exceptional service and found us the perfect executive apartments for our Abuja operations.",
       location: "Abuja Corporate Housing",
@@ -27,7 +32,7 @@ const Testimonials = () => {
       id: 3,
       name: "Mrs. Adunni Adeleke",
       position: "International Business Consultant",
-      image: "/api/placeholder/150/150", // TODO: Replace with actual client photos
+      image: testimonial3,
       rating: 5,
       quote: "The team at MansaLuxeRealty made selling our Ikoyi property seamless. They achieved a price above our expectations and handled all the complex documentation with expertise.",
       location: "Ikoyi Property Sale",
@@ -37,7 +42,7 @@ const Testimonials = () => {
       id: 4,
       name: "Engineer Kemi Balogun",
       position: "Managing Director, Balogun Construction",
-      image: "/api/placeholder/150/150", // TODO: Replace with actual client photos
+      image: testimonial4,
       rating: 5,
       quote: "Their property management services have been outstanding. Our investment properties are well-maintained, and we receive detailed monthly reports. Highly recommended for serious investors.",
       location: "Property Management Client",
@@ -47,7 +52,7 @@ const Testimonials = () => {
       id: 5,
       name: "Mr. Emeka Nwankwo",
       position: "Tech Entrepreneur",
-      image: "/api/placeholder/150/150", // TODO: Replace with actual client photos
+      image: testimonial5,
       rating: 5,
       quote: "MansaLuxeRealty's investment advisory helped us build a diverse real estate portfolio across Lagos and Abuja. Their market insights and strategic guidance have been invaluable.",
       location: "Investment Portfolio Development",
@@ -57,6 +62,13 @@ const Testimonials = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextTestimonial();
+    }, 5000); // Change testimonial every 5 seconds
+    return () => clearInterval(timer);
+  }, []);
 
   const nextTestimonial = () => {
     setCurrentIndex((prevIndex) => 
@@ -123,7 +135,7 @@ const Testimonials = () => {
                   <img
                     src={testimonials[currentIndex].image}
                     alt={testimonials[currentIndex].name}
-                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover transition-opacity duration-500"
                   />
                   <div className="flex justify-center mb-4">
                     {Array.from({ length: testimonials[currentIndex].rating }).map((_, i) => (
@@ -132,7 +144,7 @@ const Testimonials = () => {
                   </div>
                 </div>
                 
-                <blockquote className="text-xl md:text-2xl font-medium mb-8 text-foreground leading-relaxed">
+                <blockquote className="text-xl md:text-2xl font-medium mb-8 text-foreground leading-relaxed animate-fade-in">
                   "{testimonials[currentIndex].quote}"
                 </blockquote>
                 
