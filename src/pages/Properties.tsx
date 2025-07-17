@@ -82,20 +82,20 @@ const Properties = () => {
       }
 
       // Price range filter
-      const propertyPrice = priceToNumber(property.price);
+      const propertyPrice = property.price; // Already a number in Supabase
       if (propertyPrice < filters.priceRange[0] || propertyPrice > filters.priceRange[1]) {
         return false;
       }
 
       // Property type filter
-      if (filters.type !== "all" && property.type !== filters.type) {
+      if (filters.type !== "all" && property.property_type !== filters.type) {
         return false;
       }
 
-      // Featured filter
-      if (filters.featured && !property.featured) {
-        return false;
-      }
+      // Featured filter - since featured doesn't exist, skip this filter
+      // if (filters.featured && !property.featured) {
+      //   return false;
+      // }
 
       return true;
     });
@@ -114,8 +114,8 @@ const Properties = () => {
   };
 
   // Calculate price range for slider
-  const minPrice = useMemo(() => Math.min(...properties.map(p => priceToNumber(p.price))), [properties]);
-  const maxPrice = useMemo(() => Math.max(...properties.map(p => priceToNumber(p.price))), [properties]);
+  const minPrice = useMemo(() => Math.min(...properties.map(p => p.price)), [properties]);
+  const maxPrice = useMemo(() => Math.max(...properties.map(p => p.price)), [properties]);
 
   // Get icon for property type
   const getPropertyIcon = (type: string) => {
@@ -406,22 +406,25 @@ const Properties = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {currentProperties.map((property) => (
                 <div key={property.id} className="luxury-card overflow-hidden group">
-                  {property.featured && (
-                    <div className="absolute top-4 left-4 z-10 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
-                      Featured
-                    </div>
-                  )}
+                  {/* Remove featured check since it doesn't exist in database */}
                   
                   <div className="aspect-video bg-muted relative overflow-hidden">
-                    {/* TODO: Replace with actual property images */}
-                    <div className="absolute inset-0 w-full h-full flex items-center justify-center text-muted-foreground">
-                      <div className="text-center">
-                        <div className="w-16 h-16 bg-border rounded-full flex items-center justify-center mx-auto mb-2">
-                          {getPropertyIcon(property.type)}
+                    {property.images && property.images.length > 0 ? (
+                      <img
+                        src={property.images[0]}
+                        alt={property.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 w-full h-full flex items-center justify-center text-muted-foreground">
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-border rounded-full flex items-center justify-center mx-auto mb-2">
+                            {getPropertyIcon(property.property_type || 'apartment')}
+                          </div>
+                          <p className="text-sm">{property.property_type?.charAt(0).toUpperCase() + property.property_type?.slice(1) || 'Property'}</p>
                         </div>
-                        <p className="text-sm">{property.type.charAt(0).toUpperCase() + property.type.slice(1)}</p>
                       </div>
-                    </div>
+                    )}
 
                     {/* View Details Overlay */}
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -434,7 +437,7 @@ const Properties = () => {
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="text-xl font-serif font-semibold">{property.title}</h3>
-                      <span className="text-xl font-bold text-gold-gradient">{property.price}</span>
+                      <span className="text-xl font-bold text-gold-gradient">₦{property.price.toLocaleString()}</span>
                     </div>
                     
                     <div className="flex items-center space-x-1 text-muted-foreground mb-3">
@@ -449,15 +452,15 @@ const Properties = () => {
                     <div className="flex items-center justify-between text-sm text-muted-foreground border-t border-border pt-4">
                       <div className="flex items-center space-x-1">
                         <Bed className="w-4 h-4" />
-                        <span>{property.bedrooms}</span>
+                        <span>{property.bedrooms || 'N/A'}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Bath className="w-4 h-4" />
-                        <span>{property.bathrooms}</span>
+                        <span>{property.bathrooms || 'N/A'}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Square className="w-4 h-4" />
-                        <span>{property.area}</span>
+                        <span>{property.square_feet ? `${property.square_feet} sqft` : 'N/A'}</span>
                       </div>
                     </div>
                   </div>

@@ -91,18 +91,24 @@ const Home = () => {
               {featuredProperties.slice(0, 3).map((property) => (
                 <div key={property.id} className="luxury-card overflow-hidden group hover-scale">
                   <div className="aspect-video bg-muted relative overflow-hidden">
-                    <img
-                      src={property.images[0]}
-                      alt={property.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                    {property.images && property.images.length > 0 ? (
+                      <img
+                        src={property.images[0]}
+                        alt={property.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <span className="text-muted-foreground">No Image</span>
+                      </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-serif font-semibold mb-2">{property.title}</h3>
                     <p className="text-muted-foreground mb-4">{property.location}</p>
                     <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-primary">{property.price}</span>
+                      <span className="text-2xl font-bold text-primary">₦{property.price.toLocaleString()}</span>
                       <Link 
                         to="/properties" 
                         className="text-primary hover:text-primary/80 font-semibold transition-colors"

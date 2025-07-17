@@ -1,147 +1,143 @@
-// API service for fetching data from admin panel
-const API_BASE_URL = 'https://mansaluxe-realty-website.vercel.app';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Property {
-  id: number;
+  id: string; // UUID from Supabase
   title: string;
-  description: string;
-  price: string;
+  description: string | null;
+  price: number; // Numeric in Supabase
   location: string;
-  bedrooms: number;
-  bathrooms: number;
-  area: string;
-  type: string;
-  status: 'Available' | 'Under Contract' | 'Sold';
-  featured: boolean;
-  images: string[];
-  amenities?: string[];
-  features?: string[];
-  virtualTourUrl?: string;
-  videoUrl?: string;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  square_feet: number | null;
+  lot_size: string | null;
+  property_type: string | null;
+  status: string;
+  images: string[] | null;
+  amenities: string[] | null;
+  features: string[] | null;
+  year_built: number | null;
+  agent: any | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Testimonial {
-  id: number;
+  id: string; // UUID from Supabase
   name: string;
-  role: string;
-  company: string;
-  photo: string;
+  role: string | null;
+  company: string | null;
+  photo: string | null;
   quote: string;
-  rating: number;
-  property: string;
+  rating: number | null;
+  property_id: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 class ApiService {
-  private cache = new Map<string, { data: any; timestamp: number }>();
-  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  async getPublishedProperties(): Promise<Property[]> {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('status', 'available');
 
-  private async fetchWithCache<T>(url: string, cacheKey: string): Promise<T> {
-    const cached = this.cache.get(cacheKey);
-    const now = Date.now();
-
-    if (cached && (now - cached.timestamp) < this.CACHE_DURATION) {
-      return cached.data;
-    }
-
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      
-      this.cache.set(cacheKey, { data, timestamp: now });
-      return data;
-    } catch (error) {
-      console.error(`Failed to fetch from ${url}:`, error);
-      
-      // Return cached data if available, even if expired
-      if (cached) {
-        return cached.data;
-      }
-      
+    if (error) {
+      console.error('Error fetching properties:', error);
       throw error;
     }
-  }
 
-  async getPublishedProperties(): Promise<Property[]> {
-    const properties = await this.fetchWithCache<Property[]>(
-      `${API_BASE_URL}/data/properties.json`,
-      'properties'
-    );
-    
-    // Filter out sold and off-market properties
-    return properties.filter(property => 
-      property.status === 'Available' || property.status === 'Under Contract'
-    );
+    return data || [];
   }
 
   async getFeaturedProperties(): Promise<Property[]> {
-    const properties = await this.getPublishedProperties();
-    return properties.filter(property => property.featured);
+    // Since 'featured' doesn't exist in DB, we'll return first 3 available properties
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('status', 'available')
+      .limit(3);
+
+    if (error) {
+      console.error('Error fetching featured properties:', error);
+      throw error;
+    }
+
+    return data || [];
   }
 
-  async getProperty(id: number): Promise<Property | null> {
-    const properties = await this.getPublishedProperties();
-    return properties.find(property => property.id === id) || null;
+  async getProperty(id: string): Promise<Property | null> {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching property:', error);
+      return null;
+    }
+
+    return data;
   }
 
   async getTestimonials(): Promise<Testimonial[]> {
-    return this.fetchWithCache<Testimonial[]>(
-      `${API_BASE_URL}/data/testimonials.json`,
-      'testimonials'
-    );
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*');
+
+    if (error) {
+      console.error('Error fetching testimonials:', error);
+      throw error;
+    }
+
+    return data || [];
   }
 
   async searchProperties(filters: {
     location?: string;
-    type?: string;
+    property_type?: string;
     minBedrooms?: number;
     minBathrooms?: number;
     priceRange?: [number, number];
-    featured?: boolean;
   }): Promise<Property[]> {
-    const properties = await this.getPublishedProperties();
-    
-    return properties.filter(property => {
-      if (filters.location && !property.location.toLowerCase().includes(filters.location.toLowerCase())) {
-        return false;
-      }
-      
-      if (filters.type && property.type !== filters.type) {
-        return false;
-      }
-      
-      if (filters.minBedrooms && property.bedrooms < filters.minBedrooms) {
-        return false;
-      }
-      
-      if (filters.minBathrooms && property.bathrooms < filters.minBathrooms) {
-        return false;
-      }
-      
-      if (filters.featured !== undefined && property.featured !== filters.featured) {
-        return false;
-      }
-      
-      if (filters.priceRange) {
-        const price = this.parsePrice(property.price);
-        if (price < filters.priceRange[0] || price > filters.priceRange[1]) {
-          return false;
-        }
-      }
-      
-      return true;
-    });
+    let query = supabase
+      .from('properties')
+      .select('*')
+      .eq('status', 'available');
+
+    if (filters.location) {
+      query = query.ilike('location', `%${filters.location}%`);
+    }
+
+    if (filters.property_type) {
+      query = query.eq('property_type', filters.property_type);
+    }
+
+    if (filters.minBedrooms) {
+      query = query.gte('bedrooms', filters.minBedrooms);
+    }
+
+    if (filters.minBathrooms) {
+      query = query.gte('bathrooms', filters.minBathrooms);
+    }
+
+    if (filters.priceRange) {
+      query = query.gte('price', filters.priceRange[0]).lte('price', filters.priceRange[1]);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error searching properties:', error);
+      throw error;
+    }
+
+    return data || [];
   }
 
-  private parsePrice(priceString: string): number {
-    return parseInt(priceString.replace(/[₦,]/g, ''));
-  }
-
-  // Clear cache manually if needed
-  clearCache(): void {
-    this.cache.clear();
+  // Helper method to format price for display
+  formatPrice(price: number): string {
+    return `₦${price.toLocaleString()}`;
   }
 }
 

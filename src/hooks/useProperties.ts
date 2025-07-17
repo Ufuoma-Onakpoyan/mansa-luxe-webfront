@@ -53,7 +53,7 @@ export const useFeaturedProperties = () => {
   return { properties, loading, error, refetch: fetchFeaturedProperties };
 };
 
-export const useProperty = (id: number) => {
+export const useProperty = (id: string) => {
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

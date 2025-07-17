@@ -138,9 +138,9 @@ const Testimonials = () => {
                   <p className="text-primary font-medium mb-2">
                     {testimonials[currentIndex].role} at {testimonials[currentIndex].company}
                   </p>
-                  <p className="text-muted-foreground text-sm">
-                    {testimonials[currentIndex].property}
-                  </p>
+                    <p className="text-muted-foreground text-sm">
+                      {testimonials[currentIndex].property_id ? `Property: ${testimonials[currentIndex].property_id}` : 'General Review'}
+                    </p>
                 </div>
               </div>
               
@@ -212,7 +212,7 @@ const Testimonials = () => {
                 </p>
                 
                 <div className="text-xs text-muted-foreground">
-                  <p className="font-medium">{testimonial.property}</p>
+                  <p className="font-medium">{testimonial.property_id ? `Property: ${testimonial.property_id}` : 'General Review'}</p>
                   <p className="text-xs">{testimonial.role} at {testimonial.company}</p>
                 </div>
               </div>
