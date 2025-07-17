@@ -1,8 +1,11 @@
-import { ArrowRight, Award, Users, Home as HomeIcon, TrendingUp } from "lucide-react";
+import { ArrowRight, Award, Users, Home as HomeIcon, TrendingUp, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "../assets/hero-mansion.jpg";
+import { useFeaturedProperties } from "@/hooks/useProperties";
 
 const Home = () => {
+  const { properties: featuredProperties, loading: loadingFeatured } = useFeaturedProperties();
+  
   const stats = [
     { icon: HomeIcon, value: "500+", label: "Luxury Properties Sold" },
     { icon: Users, value: "1000+", label: "Happy Clients" },
@@ -79,32 +82,39 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* TODO: Replace with dynamic data from properties.json */}
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="luxury-card overflow-hidden">
-                <div className="aspect-video bg-muted">
-                  {/* TODO: Replace with actual property images */}
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                    Property Image {item}
+          {loadingFeatured ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProperties.slice(0, 3).map((property) => (
+                <div key={property.id} className="luxury-card overflow-hidden group hover-scale">
+                  <div className="aspect-video bg-muted relative overflow-hidden">
+                    <img
+                      src={property.images[0]}
+                      alt={property.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-serif font-semibold mb-2">{property.title}</h3>
+                    <p className="text-muted-foreground mb-4">{property.location}</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-2xl font-bold text-primary">{property.price}</span>
+                      <Link 
+                        to="/properties" 
+                        className="text-primary hover:text-primary/80 font-semibold transition-colors"
+                      >
+                        View Details
+                      </Link>
+                    </div>
                   </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-serif font-semibold mb-2">Property Name</h3>
-                  <p className="text-muted-foreground mb-4">Location, Lagos</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold text-primary">₦XXX,XXX,XXX</span>
-                    <Link 
-                      to="/properties" 
-                      className="text-primary hover:text-primary/80 font-semibold"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           
           <div className="text-center mt-12">
             <Link to="/properties" className="btn-luxury">

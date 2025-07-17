@@ -1,24 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { 
   MapPin, Bed, Bath, Square, Filter, Search, 
   Building, Landmark, Home, Castle, Building2, DollarSign,
-  SlidersHorizontal, Check, X
+  SlidersHorizontal, Check, X, Loader2, AlertCircle, Star, Eye
 } from "lucide-react";
-import propertiesData from "../data/properties.json";
+import { useProperties } from "@/hooks/useProperties";
+import { Property } from "@/services/api";
 
-interface Property {
-  id: number;
-  name: string;
-  location: string;
-  price: string;
-  bedrooms: number;
-  bathrooms: number;
-  area: string;
-  description: string;
-  image: string;
-  featured: boolean;
-  type: string;
-}
+// Property interface is now imported from services/api
 
 interface FilterState {
   location: string;
@@ -49,7 +38,7 @@ const formatPrice = (price: number): string => {
 };
 
 const Properties = () => {
-  const [properties, setProperties] = useState<Property[]>([]);
+  const { properties, loading, error } = useProperties();
   const [filters, setFilters] = useState<FilterState>(initialFilterState);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -59,24 +48,19 @@ const Properties = () => {
   // Get unique locations for filter dropdown
   const locations = useMemo(() => {
     const uniqueLocations = new Set<string>();
-    propertiesData.properties.forEach(property => {
+    properties.forEach(property => {
       // Extract city from location (assumes format "Area, City")
       const city = property.location.split(',').pop()?.trim() || property.location;
       uniqueLocations.add(city);
     });
     return Array.from(uniqueLocations).sort();
-  }, []);
-
-  useEffect(() => {
-    // In a real app, this would be an API call with the filters applied
-    setProperties(propertiesData.properties);
-  }, []);
+  }, [properties]);
 
   // Apply filters to properties
   const filteredProperties = useMemo(() => {
     return properties.filter(property => {
       // Search term filter
-      if (searchTerm && !property.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+      if (searchTerm && !property.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
           !property.location.toLowerCase().includes(searchTerm.toLowerCase()) &&
           !property.description.toLowerCase().includes(searchTerm.toLowerCase())) {
         return false;
@@ -156,6 +140,34 @@ const Properties = () => {
     { value: "apartment", label: "Apartment", icon: <Building className="w-4 h-4" /> },
     { value: "duplex", label: "Duplex", icon: <Building2 className="w-4 h-4" /> }
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading properties...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+          <p className="text-destructive mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="btn-luxury"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -421,7 +433,7 @@ const Properties = () => {
                   
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-xl font-serif font-semibold">{property.name}</h3>
+                      <h3 className="text-xl font-serif font-semibold">{property.title}</h3>
                       <span className="text-xl font-bold text-gold-gradient">{property.price}</span>
                     </div>
                     

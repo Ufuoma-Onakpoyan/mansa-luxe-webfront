@@ -1,74 +1,19 @@
 import { useState, useEffect } from "react";
-import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
-import testimonial1 from "../assets/testimonial-1.jpg";
-import testimonial2 from "../assets/testimonial-2.jpg";
-import testimonial3 from "../assets/testimonial-3.jpg";
-import testimonial4 from "../assets/testimonial-4.jpg";
-import testimonial5 from "../assets/testimonial-5.jpg";
+import { Star, ChevronLeft, ChevronRight, Quote, Loader2, AlertCircle } from "lucide-react";
+import { useTestimonials } from "@/hooks/useTestimonials";
 
 const Testimonials = () => {
-  const testimonials = [
-    {
-      id: 1,
-      name: "Dr. Chioma Okafor",
-      position: "Medical Director, Lagos University Teaching Hospital",
-      image: testimonial1,
-      rating: 5,
-      quote: "MansaLuxeRealty helped us find our dream home in Victoria Island. Their professionalism and attention to detail throughout the entire process was exceptional. They truly understand the luxury market in Lagos.",
-      location: "Victoria Island Property Purchase",
-      date: "December 2023"
-    },
-    {
-      id: 2,
-      name: "Alhaji Musa Ibrahim",
-      position: "CEO, Northern Star Holdings",
-      image: testimonial2,
-      rating: 5,
-      quote: "Working with MansaLuxeRealty was a game-changer for our corporate housing needs. They provided exceptional service and found us the perfect executive apartments for our Abuja operations.",
-      location: "Abuja Corporate Housing",
-      date: "November 2023"
-    },
-    {
-      id: 3,
-      name: "Mrs. Adunni Adeleke",
-      position: "International Business Consultant",
-      image: testimonial3,
-      rating: 5,
-      quote: "The team at MansaLuxeRealty made selling our Ikoyi property seamless. They achieved a price above our expectations and handled all the complex documentation with expertise.",
-      location: "Ikoyi Property Sale",
-      date: "October 2023"
-    },
-    {
-      id: 4,
-      name: "Engineer Kemi Balogun",
-      position: "Managing Director, Balogun Construction",
-      image: testimonial4,
-      rating: 5,
-      quote: "Their property management services have been outstanding. Our investment properties are well-maintained, and we receive detailed monthly reports. Highly recommended for serious investors.",
-      location: "Property Management Client",
-      date: "September 2023"
-    },
-    {
-      id: 5,
-      name: "Mr. Emeka Nwankwo",
-      position: "Tech Entrepreneur",
-      image: testimonial5,
-      rating: 5,
-      quote: "MansaLuxeRealty's investment advisory helped us build a diverse real estate portfolio across Lagos and Abuja. Their market insights and strategic guidance have been invaluable.",
-      location: "Investment Portfolio Development",
-      date: "August 2023"
-    }
-    // TODO: Add more testimonials from real clients
-  ];
-
+  const { testimonials, loading, error } = useTestimonials();
   const [currentIndex, setCurrentIndex] = useState(0);
   
   useEffect(() => {
+    if (testimonials.length === 0) return;
+    
     const timer = setInterval(() => {
       nextTestimonial();
     }, 5000); // Change testimonial every 5 seconds
     return () => clearInterval(timer);
-  }, []);
+  }, [testimonials.length]);
 
   const nextTestimonial = () => {
     setCurrentIndex((prevIndex) => 
@@ -92,6 +37,44 @@ const Testimonials = () => {
     { value: "₦50B+", label: "Total Property Value Sold" },
     { value: "15+", label: "Industry Awards" }
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading testimonials...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+          <p className="text-destructive mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="btn-luxury"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">No testimonials available at the moment.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -133,7 +116,7 @@ const Testimonials = () => {
               <div className="text-center relative z-10">
                 <div className="mb-8">
                   <img
-                    src={testimonials[currentIndex].image}
+                    src={testimonials[currentIndex].photo}
                     alt={testimonials[currentIndex].name}
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover transition-opacity duration-500"
                   />
@@ -153,10 +136,10 @@ const Testimonials = () => {
                     {testimonials[currentIndex].name}
                   </h4>
                   <p className="text-primary font-medium mb-2">
-                    {testimonials[currentIndex].position}
+                    {testimonials[currentIndex].role} at {testimonials[currentIndex].company}
                   </p>
                   <p className="text-muted-foreground text-sm">
-                    {testimonials[currentIndex].location} • {testimonials[currentIndex].date}
+                    {testimonials[currentIndex].property}
                   </p>
                 </div>
               </div>
@@ -210,7 +193,7 @@ const Testimonials = () => {
               <div key={testimonial.id} className="luxury-card p-6">
                 <div className="flex items-center mb-4">
                   <img
-                    src={testimonial.image}
+                    src={testimonial.photo}
                     alt={testimonial.name}
                     className="w-12 h-12 rounded-full mr-4 object-cover"
                   />
@@ -229,8 +212,8 @@ const Testimonials = () => {
                 </p>
                 
                 <div className="text-xs text-muted-foreground">
-                  <p className="font-medium">{testimonial.location}</p>
-                  <p>{testimonial.date}</p>
+                  <p className="font-medium">{testimonial.property}</p>
+                  <p className="text-xs">{testimonial.role} at {testimonial.company}</p>
                 </div>
               </div>
             ))}
