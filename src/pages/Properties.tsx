@@ -1,5 +1,9 @@
-import { useState, useEffect } from "react";
-import { MapPin, Bed, Bath, Square, Filter, Search } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { 
+  MapPin, Bed, Bath, Square, Filter, Search, 
+  Building, Landmark, Home, Castle, Building2, DollarSign,
+  SlidersHorizontal, Check, X
+} from "lucide-react";
 import propertiesData from "../data/properties.json";
 
 interface Property {
@@ -16,44 +20,142 @@ interface Property {
   type: string;
 }
 
+interface FilterState {
+  location: string;
+  minBedrooms: number;
+  minBathrooms: number;
+  priceRange: [number, number];
+  type: string;
+  featured: boolean;
+}
+
+const initialFilterState: FilterState = {
+  location: "",
+  minBedrooms: 0,
+  minBathrooms: 0,
+  priceRange: [0, 3000000000], // 0 to 3 billion Naira
+  type: "all",
+  featured: false,
+};
+
+// Price formatter to convert string price to number (remove currency symbol and commas)
+const priceToNumber = (price: string): number => {
+  return parseInt(price.replace(/[^\d]/g, ''));
+};
+
+// Convert number back to formatted Nigerian Naira
+const formatPrice = (price: number): string => {
+  return `₦${price.toLocaleString()}`;
+};
+
 const Properties = () => {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const [filters, setFilters] = useState<FilterState>(initialFilterState);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("all");
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const propertiesPerPage = 9;
 
-  useEffect(() => {
-    // TODO: Replace with API call to fetch properties
-    setProperties(propertiesData.properties);
-    setFilteredProperties(propertiesData.properties);
+  // Get unique locations for filter dropdown
+  const locations = useMemo(() => {
+    const uniqueLocations = new Set<string>();
+    propertiesData.properties.forEach(property => {
+      // Extract city from location (assumes format "Area, City")
+      const city = property.location.split(',').pop()?.trim() || property.location;
+      uniqueLocations.add(city);
+    });
+    return Array.from(uniqueLocations).sort();
   }, []);
 
   useEffect(() => {
-    let filtered = properties;
+    // In a real app, this would be an API call with the filters applied
+    setProperties(propertiesData.properties);
+  }, []);
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(property =>
-        property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.location.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+  // Apply filters to properties
+  const filteredProperties = useMemo(() => {
+    return properties.filter(property => {
+      // Search term filter
+      if (searchTerm && !property.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+          !property.location.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !property.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+
+      // Location filter
+      if (filters.location && !property.location.includes(filters.location)) {
+        return false;
+      }
+
+      // Bedroom filter
+      if (property.bedrooms < filters.minBedrooms) {
+        return false;
+      }
+
+      // Bathroom filter
+      if (property.bathrooms < filters.minBathrooms) {
+        return false;
+      }
+
+      // Price range filter
+      const propertyPrice = priceToNumber(property.price);
+      if (propertyPrice < filters.priceRange[0] || propertyPrice > filters.priceRange[1]) {
+        return false;
+      }
+
+      // Property type filter
+      if (filters.type !== "all" && property.type !== filters.type) {
+        return false;
+      }
+
+      // Featured filter
+      if (filters.featured && !property.featured) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [properties, searchTerm, filters]);
+
+  // Calculate pagination
+  const indexOfLastProperty = currentPage * propertiesPerPage;
+  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
+  const currentProperties = filteredProperties.slice(indexOfFirstProperty, indexOfLastProperty);
+  const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
+
+  // Reset filters
+  const resetFilters = () => {
+    setFilters(initialFilterState);
+    setSearchTerm("");
+  };
+
+  // Calculate price range for slider
+  const minPrice = useMemo(() => Math.min(...properties.map(p => priceToNumber(p.price))), [properties]);
+  const maxPrice = useMemo(() => Math.max(...properties.map(p => priceToNumber(p.price))), [properties]);
+
+  // Get icon for property type
+  const getPropertyIcon = (type: string) => {
+    switch (type) {
+      case "penthouse": return <Building2 className="w-4 h-4" />;
+      case "villa": return <Home className="w-4 h-4" />;
+      case "mansion": return <Castle className="w-4 h-4" />;
+      case "estate": return <Landmark className="w-4 h-4" />;
+      case "apartment": return <Building className="w-4 h-4" />;
+      case "duplex": return <Building2 className="w-4 h-4" />;
+      default: return <Home className="w-4 h-4" />;
     }
+  };
 
-    // Filter by property type
-    if (filterType !== "all") {
-      filtered = filtered.filter(property => property.type === filterType);
-    }
-
-    // Filter by featured
-    if (showFeaturedOnly) {
-      filtered = filtered.filter(property => property.featured);
-    }
-
-    setFilteredProperties(filtered);
-  }, [properties, searchTerm, filterType, showFeaturedOnly]);
-
-  const propertyTypes = ["all", "penthouse", "villa", "mansion", "estate", "apartment", "duplex"];
+  // Property types for filter
+  const propertyTypes = [
+    { value: "all", label: "All Types", icon: <Home className="w-4 h-4" /> },
+    { value: "penthouse", label: "Penthouse", icon: <Building2 className="w-4 h-4" /> },
+    { value: "villa", label: "Villa", icon: <Home className="w-4 h-4" /> },
+    { value: "mansion", label: "Mansion", icon: <Castle className="w-4 h-4" /> },
+    { value: "estate", label: "Estate", icon: <Landmark className="w-4 h-4" /> },
+    { value: "apartment", label: "Apartment", icon: <Building className="w-4 h-4" /> },
+    { value: "duplex", label: "Duplex", icon: <Building2 className="w-4 h-4" /> }
+  ];
 
   return (
     <div>
@@ -72,7 +174,7 @@ const Properties = () => {
       </section>
 
       {/* Filters Section */}
-      <section className="py-8 bg-card border-b border-border">
+      <section className="sticky top-16 z-10 py-6 bg-card border-b border-border shadow-md backdrop-blur-md">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             {/* Search */}
@@ -87,34 +189,184 @@ const Properties = () => {
               />
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-wrap gap-4 items-center">
-              <div className="flex items-center space-x-2">
-                <Filter className="w-4 h-4 text-muted-foreground" />
-                <select
-                  className="bg-background border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  value={filterType}
-                  onChange={(e) => setFilterType(e.target.value)}
-                >
-                  {propertyTypes.map(type => (
-                    <option key={type} value={type}>
-                      {type === "all" ? "All Types" : type.charAt(0).toUpperCase() + type.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            {/* Filter Toggle */}
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="flex items-center space-x-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors"
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                <span>Filters</span>
+                {Object.values(filters).some(v => 
+                  v !== initialFilterState.location && 
+                  v !== initialFilterState.type &&
+                  v !== initialFilterState.priceRange &&
+                  v !== initialFilterState.featured &&
+                  v !== initialFilterState.minBathrooms &&
+                  v !== initialFilterState.minBedrooms
+                ) && (
+                  <span className="ml-2 w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
+                    !
+                  </span>
+                )}
+              </button>
 
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary"
-                  checked={showFeaturedOnly}
-                  onChange={(e) => setShowFeaturedOnly(e.target.checked)}
-                />
-                <span className="text-sm text-muted-foreground">Featured Only</span>
-              </label>
+              {/* Reset Filters */}
+              {Object.values(filters).some(v => 
+                v !== initialFilterState.location && 
+                v !== initialFilterState.type &&
+                v !== initialFilterState.priceRange &&
+                v !== initialFilterState.featured &&
+                v !== initialFilterState.minBathrooms &&
+                v !== initialFilterState.minBedrooms
+              ) && (
+                <button
+                  onClick={resetFilters}
+                  className="flex items-center space-x-1 px-3 py-1 text-sm text-muted-foreground hover:text-primary"
+                >
+                  <X className="w-3 h-3" />
+                  <span>Clear All</span>
+                </button>
+              )}
             </div>
           </div>
+
+          {/* Advanced Filters Panel */}
+          {isFilterOpen && (
+            <div className="mt-6 p-6 bg-card rounded-lg border border-border animate-fade-in">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Location Filter */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-muted-foreground">Location</label>
+                  <select
+                    className="w-full bg-background border border-border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    value={filters.location}
+                    onChange={(e) => setFilters({...filters, location: e.target.value})}
+                  >
+                    <option value="">Any Location</option>
+                    {locations.map((location) => (
+                      <option key={location} value={location}>{location}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Property Type Filter */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-muted-foreground">Property Type</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {propertyTypes.map((type) => (
+                      <button
+                        key={type.value}
+                        className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-md transition-colors ${
+                          filters.type === type.value
+                            ? "bg-primary/20 text-primary border border-primary"
+                            : "bg-background border border-border text-foreground hover:bg-secondary"
+                        }`}
+                        onClick={() => setFilters({...filters, type: type.value})}
+                      >
+                        {type.icon}
+                        <span>{type.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bedrooms & Bathrooms */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-muted-foreground">Minimum Bedrooms</label>
+                  <div className="flex">
+                    {[0, 1, 2, 3, 4, 5, 6, "7+"].map((num) => (
+                      <button
+                        key={num}
+                        className={`flex-1 py-2 text-center text-sm border-r last:border-r-0 transition-colors ${
+                          filters.minBedrooms === (num === "7+" ? 7 : Number(num))
+                            ? "bg-primary/20 text-primary border-t border-b border-primary"
+                            : "bg-background border-t border-b border-border text-foreground hover:bg-secondary"
+                        }`}
+                        onClick={() => setFilters({...filters, minBedrooms: num === "7+" ? 7 : Number(num)})}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <label className="block text-sm font-medium mb-2 mt-4 text-muted-foreground">Minimum Bathrooms</label>
+                  <div className="flex">
+                    {[0, 1, 2, 3, 4, 5, "6+"].map((num) => (
+                      <button
+                        key={num}
+                        className={`flex-1 py-2 text-center text-sm border-r last:border-r-0 transition-colors ${
+                          filters.minBathrooms === (num === "6+" ? 6 : Number(num))
+                            ? "bg-primary/20 text-primary border-t border-b border-primary"
+                            : "bg-background border-t border-b border-border text-foreground hover:bg-secondary"
+                        }`}
+                        onClick={() => setFilters({...filters, minBathrooms: num === "6+" ? 6 : Number(num)})}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Featured & Price Filter */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-muted-foreground">Show Featured Only</label>
+                  <button
+                    className={`w-full flex items-center justify-between px-4 py-2 rounded-lg border ${
+                      filters.featured
+                        ? "bg-primary/20 border-primary text-primary"
+                        : "bg-background border-border hover:bg-secondary"
+                    }`}
+                    onClick={() => setFilters({...filters, featured: !filters.featured})}
+                  >
+                    <span>Featured Properties</span>
+                    {filters.featured && <Check className="w-4 h-4" />}
+                  </button>
+
+                  <label className="block text-sm font-medium mb-2 mt-4 text-muted-foreground">Price Range</label>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-muted-foreground">₦{(filters.priceRange[0]/1000000).toFixed(0)}M</span>
+                    <div className="flex-1 h-2 bg-background rounded-full relative">
+                      <div 
+                        className="absolute top-0 left-0 h-2 bg-primary rounded-full"
+                        style={{
+                          width: `${((filters.priceRange[1] - filters.priceRange[0]) / (maxPrice - minPrice)) * 100}%`,
+                          left: `${((filters.priceRange[0] - minPrice) / (maxPrice - minPrice)) * 100}%`
+                        }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-muted-foreground">₦{(filters.priceRange[1]/1000000).toFixed(0)}M</span>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <button 
+                      className="bg-background hover:bg-secondary border border-border rounded-lg px-2 py-1 text-xs"
+                      onClick={() => setFilters({...filters, priceRange: [0, 500000000]})}
+                    >
+                      Under ₦500M
+                    </button>
+                    <button 
+                      className="bg-background hover:bg-secondary border border-border rounded-lg px-2 py-1 text-xs"
+                      onClick={() => setFilters({...filters, priceRange: [500000000, 1000000000]})}
+                    >
+                      ₦500M - ₦1B
+                    </button>
+                    <button 
+                      className="bg-background hover:bg-secondary border border-border rounded-lg px-2 py-1 text-xs"
+                      onClick={() => setFilters({...filters, priceRange: [1000000000, 2000000000]})}
+                    >
+                      ₦1B - ₦2B
+                    </button>
+                    <button 
+                      className="bg-background hover:bg-secondary border border-border rounded-lg px-2 py-1 text-xs"
+                      onClick={() => setFilters({...filters, priceRange: [2000000000, maxPrice]})}
+                    >
+                      Over ₦2B
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -123,38 +375,55 @@ const Properties = () => {
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <p className="text-muted-foreground">
-              Showing {filteredProperties.length} of {properties.length} properties
+              Showing {currentProperties.length} of {filteredProperties.length} properties
+              {filteredProperties.length !== properties.length && ` (filtered from ${properties.length} total)`}
             </p>
           </div>
 
           {filteredProperties.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-muted-foreground text-lg">No properties found matching your criteria.</p>
+              <button 
+                className="mt-4 btn-outline-luxury !py-2 !text-sm"
+                onClick={resetFilters}
+              >
+                Reset Filters
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProperties.map((property) => (
-                <div key={property.id} className="luxury-card overflow-hidden">
+              {currentProperties.map((property) => (
+                <div key={property.id} className="luxury-card overflow-hidden group">
                   {property.featured && (
                     <div className="absolute top-4 left-4 z-10 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
                       Featured
                     </div>
                   )}
                   
-                  <div className="aspect-video bg-muted relative">
+                  <div className="aspect-video bg-muted relative overflow-hidden">
                     {/* TODO: Replace with actual property images */}
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                    <div className="absolute inset-0 w-full h-full flex items-center justify-center text-muted-foreground">
                       <div className="text-center">
                         <div className="w-16 h-16 bg-border rounded-full flex items-center justify-center mx-auto mb-2">
-                          <Square className="w-8 h-8" />
+                          {getPropertyIcon(property.type)}
                         </div>
-                        <p className="text-sm">Property Image</p>
+                        <p className="text-sm">{property.type.charAt(0).toUpperCase() + property.type.slice(1)}</p>
                       </div>
+                    </div>
+
+                    {/* View Details Overlay */}
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                        View Details
+                      </button>
                     </div>
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="text-xl font-serif font-semibold mb-2">{property.name}</h3>
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-xl font-serif font-semibold">{property.name}</h3>
+                      <span className="text-xl font-bold text-gold-gradient">{property.price}</span>
+                    </div>
                     
                     <div className="flex items-center space-x-1 text-muted-foreground mb-3">
                       <MapPin className="w-4 h-4" />
@@ -165,7 +434,7 @@ const Properties = () => {
                       {property.description}
                     </p>
                     
-                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground border-t border-border pt-4">
                       <div className="flex items-center space-x-1">
                         <Bed className="w-4 h-4" />
                         <span>{property.bedrooms}</span>
@@ -179,25 +448,46 @@ const Properties = () => {
                         <span>{property.area}</span>
                       </div>
                     </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-primary">{property.price}</span>
-                      <button className="btn-outline-luxury !px-4 !py-2 text-sm">
-                        View Details
-                      </button>
-                    </div>
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* TODO: Add pagination for large property lists */}
-          {filteredProperties.length > 9 && (
-            <div className="text-center mt-12">
-              <button className="btn-luxury">
-                Load More Properties
-              </button>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-12">
+              <div className="flex border border-border rounded-lg overflow-hidden">
+                <button 
+                  className={`px-4 py-2 ${currentPage === 1 ? 'text-muted-foreground' : 'text-foreground hover:bg-secondary'}`}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-10 text-center py-2 ${
+                      currentPage === index + 1
+                        ? 'bg-primary/20 text-primary'
+                        : 'hover:bg-secondary'
+                    }`}
+                    onClick={() => setCurrentPage(index + 1)}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                
+                <button 
+                  className={`px-4 py-2 ${currentPage === totalPages ? 'text-muted-foreground' : 'text-foreground hover:bg-secondary'}`}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
         </div>

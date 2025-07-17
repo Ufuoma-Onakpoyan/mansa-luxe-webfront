@@ -18,8 +18,8 @@
     --popover: 0 0% 8%;
     --popover-foreground: 0 0% 100%;
 
-    /* Gold primary color #D4AF37 */
-    --primary: 51 100% 52%;             /* Gold #D4AF37 */
+    /* Richer Gold primary color #D4AF37 -> #FFCC33 */
+    --primary: 47 100% 60%;             /* Richer Gold #FFCC33 */
     --primary-foreground: 0 0% 0%;      /* Black text on gold */
 
     --secondary: 0 0% 10%;              /* Dark gray */
@@ -28,7 +28,7 @@
     --muted: 0 0% 15%;                  /* Muted dark */
     --muted-foreground: 0 0% 65%;       /* Light gray text */
 
-    --accent: 51 100% 52%;              /* Gold accent */
+    --accent: 48 95% 52%;               /* Second gold accent */
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
@@ -36,18 +36,18 @@
 
     --border: 0 0% 20%;                 /* Dark border */
     --input: 0 0% 8%;                   /* Dark input background */
-    --ring: 51 100% 52%;                /* Gold focus ring */
+    --ring: 47 100% 60%;                /* Gold focus ring */
 
     --radius: 0.75rem;
 
     /* Custom luxury gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(51 100% 52%), hsl(45 100% 48%));
+    --gradient-gold: linear-gradient(135deg, hsl(47 100% 60%), hsl(43 100% 55%));
     --gradient-black: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 10%));
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 5%), hsl(0 0% 0%));
     
     /* Elegant shadows */
-    --shadow-luxury: 0 20px 40px -10px hsl(51 100% 52% / 0.2);
-    --shadow-gold: 0 0 30px hsl(51 100% 52% / 0.3);
+    --shadow-luxury: 0 20px 40px -10px hsl(47 100% 60% / 0.3);
+    --shadow-gold: 0 0 30px hsl(47 100% 60% / 0.4);
     --shadow-elegant: 0 10px 30px -5px hsl(0 0% 0% / 0.5);
 
     /* Animations */
@@ -142,7 +142,7 @@
   .luxury-card {
     @apply bg-card border border-border rounded-lg;
     @apply shadow-[0_10px_30px_-5px_hsl(0_0%_0%/0.3)];
-    @apply transition-all duration-300 hover:shadow-[0_20px_40px_-10px_hsl(51_100%_52%/0.2)];
+    @apply transition-all duration-300 hover:shadow-[0_20px_40px_-10px_hsl(47_100%_60%/0.3)];
     @apply hover:-translate-y-1;
   }
 
@@ -151,8 +151,8 @@
     @apply min-h-screen flex items-center justify-center;
     @apply bg-gradient-to-br from-background via-secondary to-background;
     background-image: 
-      radial-gradient(circle at 20% 50%, hsl(51 100% 52% / 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, hsl(51 100% 52% / 0.05) 0%, transparent 50%);
+      radial-gradient(circle at 20% 50%, hsl(47 100% 60% / 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(47 100% 60% / 0.1) 0%, transparent 50%);
   }
 
   /* Text gradient for headings */
@@ -166,6 +166,6 @@
   /* Navbar glass effect */
   .navbar-glass {
     @apply backdrop-blur-md bg-primary/95 border-b border-primary/20;
-    box-shadow: 0 4px 20px hsl(51 100% 52% / 0.2);
+    box-shadow: 0 4px 20px hsl(47 100% 60% / 0.3);
   }
 }
