@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MapPin, Phone, Mail, Clock, Send, Building } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -37,37 +38,28 @@ const Contact = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch(
-        `https://eufxcilctdpitojlimvj.supabase.co/functions/v1/send-contact-email`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1ZnhjaWxjdGRwaXRvamxpbXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3OTE4NzcsImV4cCI6MjA2ODM2Nzg3N30._rawsW32arUMBh32SIZPgHpTDInFfw8fvHUGGQBueBE`
-          },
-          body: JSON.stringify({
-            ...formData,
-            phone: formData.phone ? `${formData.countryCode} ${formData.phone}` : ''
-          })
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          ...formData,
+          phone: formData.phone ? `${formData.countryCode} ${formData.phone}` : ''
         }
-      );
+      });
 
-      if (response.ok) {
-        alert("Thank you for your inquiry! We will contact you within 24 hours.");
-        // Reset form
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          countryCode: "+234",
-          subject: "",
-          message: "",
-          propertyType: "",
-          budget: ""
-        });
-      } else {
-        throw new Error('Failed to send message');
+      if (error) {
+        throw error;
       }
+      alert("Thank you for your inquiry! We will contact you within 24 hours.");
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        countryCode: "+234",
+        subject: "",
+        message: "",
+        propertyType: "",
+        budget: ""
+      });
     } catch (error) {
       console.error('Error sending contact form:', error);
       alert("Sorry, there was an error sending your message. Please try again or contact us directly.");
