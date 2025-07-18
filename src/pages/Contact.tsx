@@ -6,11 +6,24 @@ const Contact = () => {
     name: "",
     email: "",
     phone: "",
+    countryCode: "+234",
     subject: "",
     message: "",
     propertyType: "",
     budget: ""
   });
+
+  const countryCodes = [
+    { code: "+234", country: "Nigeria", flag: "🇳🇬" },
+    { code: "+1", country: "USA", flag: "🇺🇸" },
+    { code: "+44", country: "UK", flag: "🇬🇧" },
+    { code: "+33", country: "France", flag: "🇫🇷" },
+    { code: "+49", country: "Germany", flag: "🇩🇪" },
+    { code: "+971", country: "UAE", flag: "🇦🇪" },
+    { code: "+27", country: "South Africa", flag: "🇿🇦" },
+    { code: "+254", country: "Kenya", flag: "🇰🇪" },
+    { code: "+233", country: "Ghana", flag: "🇬🇭" },
+  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -43,6 +56,7 @@ const Contact = () => {
           name: "",
           email: "",
           phone: "",
+          countryCode: "+234",
           subject: "",
           message: "",
           propertyType: "",
@@ -178,15 +192,29 @@ const Contact = () => {
                     <label htmlFor="phone" className="block text-sm font-medium mb-2">
                       Phone Number
                     </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="+234 XXX XXX XXXX"
-                    />
+                    <div className="flex">
+                      <select
+                        name="countryCode"
+                        value={formData.countryCode}
+                        onChange={handleInputChange}
+                        className="px-3 py-2 bg-background border border-border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary border-r-0"
+                      >
+                        {countryCodes.map((country) => (
+                          <option key={country.code} value={country.code}>
+                            {country.flag} {country.code}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="flex-1 px-4 py-2 bg-background border border-border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="123 456 7890"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label htmlFor="propertyType" className="block text-sm font-medium mb-2">
