@@ -45,7 +45,10 @@ const Contact = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1ZnhjaWxjdGRwaXRvamxpbXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3OTE4NzcsImV4cCI6MjA2ODM2Nzg3N30._rawsW32arUMBh32SIZPgHpTDInFfw8fvHUGGQBueBE`
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify({
+            ...formData,
+            phone: formData.phone ? `${formData.countryCode} ${formData.phone}` : ''
+          })
         }
       );
 
