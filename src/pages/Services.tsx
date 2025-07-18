@@ -10,6 +10,7 @@ import {
   Briefcase,
   Phone
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   const services = [
@@ -243,14 +244,14 @@ const Services = () => {
               how we can help you achieve your property goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-luxury inline-flex items-center space-x-2">
+              <Link to="/contact" className="btn-luxury inline-flex items-center space-x-2">
                 <Phone className="w-5 h-5" />
                 <span>Schedule Consultation</span>
-              </button>
-              <button className="btn-outline-luxury inline-flex items-center space-x-2">
+              </Link>
+              <Link to="/contact" className="btn-outline-luxury inline-flex items-center space-x-2">
                 <FileText className="w-5 h-5" />
                 <span>Download Service Guide</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

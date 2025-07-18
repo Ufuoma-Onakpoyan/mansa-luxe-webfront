@@ -65,7 +65,10 @@ const PropertyDetail = () => {
   }
 
   const images = property.images || [];
-  const hasVideo = false; // Placeholder for video functionality
+  // Check if property has video - could be in images array or separate video field
+  const hasVideo = property.images?.some(image => 
+    image.includes('.mp4') || image.includes('.mov') || image.includes('.avi') || image.includes('video')
+  ) || false;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -135,14 +138,34 @@ const PropertyDetail = () => {
               </div>
             )}
 
-            {/* Video Section Placeholder */}
+            {/* Video Section */}
             {hasVideo && (
               <Card className="overflow-hidden luxury-card">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-4">Property Video Tour</h3>
-                  <div className="relative h-64 bg-muted rounded-lg flex items-center justify-center">
-                    <PlayCircle className="w-16 h-16 text-muted-foreground" />
-                    <span className="ml-4 text-muted-foreground">Video player would go here</span>
+                  <div className="relative h-64 bg-muted rounded-lg overflow-hidden">
+                    {property.images?.find(img => 
+                      img.includes('.mp4') || img.includes('.mov') || img.includes('.avi')
+                    ) ? (
+                      <video 
+                        className="w-full h-full object-cover" 
+                        controls
+                        preload="metadata"
+                      >
+                        <source 
+                          src={property.images.find(img => 
+                            img.includes('.mp4') || img.includes('.mov') || img.includes('.avi')
+                          )} 
+                          type="video/mp4" 
+                        />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <PlayCircle className="w-16 h-16 text-muted-foreground" />
+                        <span className="ml-4 text-muted-foreground">Video will display here when available</span>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -257,9 +280,11 @@ const PropertyDetail = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4">Interested?</h3>
                 <div className="space-y-3">
-                  <Button className="w-full" size="lg">
-                    Contact Agent
-                  </Button>
+                  <Link to="/contact">
+                    <Button className="w-full" size="lg">
+                      Contact Agent
+                    </Button>
+                  </Link>
                   <Button variant="outline" className="w-full" size="lg">
                     Schedule Viewing
                   </Button>

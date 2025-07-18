@@ -522,9 +522,9 @@ const Properties = () => {
               Our team specializes in finding exclusive off-market properties that match your specific requirements. 
               Let us help you discover your perfect luxury home.
             </p>
-            <button className="btn-luxury">
+            <Link to="/contact" className="btn-luxury">
               Contact Our Property Experts
-            </button>
+            </Link>
           </div>
         </div>
       </section>

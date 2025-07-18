@@ -20,21 +20,41 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement form submission logic
-    console.log("Form submitted:", formData);
-    alert("Thank you for your inquiry! We will contact you within 24 hours.");
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-      propertyType: "",
-      budget: ""
-    });
+    
+    try {
+      const response = await fetch(
+        `https://eufxcilctdpitojlimvj.supabase.co/functions/v1/send-contact-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1ZnhjaWxjdGRwaXRvamxpbXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3OTE4NzcsImV4cCI6MjA2ODM2Nzg3N30._rawsW32arUMBh32SIZPgHpTDInFfw8fvHUGGQBueBE`
+          },
+          body: JSON.stringify(formData)
+        }
+      );
+
+      if (response.ok) {
+        alert("Thank you for your inquiry! We will contact you within 24 hours.");
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+          propertyType: "",
+          budget: ""
+        });
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending contact form:', error);
+      alert("Sorry, there was an error sending your message. Please try again or contact us directly.");
+    }
   };
 
   const contactInfo = [
@@ -60,9 +80,8 @@ const Contact = () => {
       icon: Mail,
       title: "Email Us",
       details: [
-        "info@mansaluxerealty.com",
-        "sales@mansaluxerealty.com",
-        "support@mansaluxerealty.com"
+        "mansaluxerealty@mrdgngroup.com",
+        "support.mansaluxerealty@mrdgngroup.com"
       ]
     },
     {
@@ -81,19 +100,19 @@ const Contact = () => {
       city: "Lagos",
       address: "123 Victoria Island Way, Lagos",
       phone: "+234 900 123 4567",
-      email: "lagos@mansaluxerealty.com"
+      email: "mansaluxerealty@mrdgngroup.com"
     },
     {
       city: "Abuja",
       address: "456 Central Business District, Abuja",
       phone: "+234 900 234 5678",
-      email: "abuja@mansaluxerealty.com"
+      email: "mansaluxerealty@mrdgngroup.com"
     },
     {
       city: "Port Harcourt",
       address: "789 GRA Phase 2, Port Harcourt",
       phone: "+234 900 345 6789",
-      email: "portharcourt@mansaluxerealty.com"
+      email: "mansaluxerealty@mrdgngroup.com"
     }
   ];
 

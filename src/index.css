@@ -18,8 +18,8 @@
     --popover: 0 0% 8%;
     --popover-foreground: 0 0% 100%;
 
-    /* Updated to match logo copper/bronze color */
-    --primary: 25 65% 55%;              /* Copper/bronze color from logo */
+    /* Updated to match logo copper/bronze color exactly */
+    --primary: 25 65% 45%;              /* Darker copper/bronze to match logo */
     --primary-foreground: 0 0% 0%;      /* Black text on copper */
 
     --secondary: 0 0% 10%;              /* Dark gray */
@@ -28,7 +28,7 @@
     --muted: 0 0% 15%;                  /* Muted dark */
     --muted-foreground: 0 0% 65%;       /* Light gray text */
 
-    --accent: 48 95% 52%;               /* Second gold accent */
+    --accent: 25 65% 50%;               /* Copper accent matching primary */
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
@@ -36,18 +36,18 @@
 
     --border: 0 0% 20%;                 /* Dark border */
     --input: 0 0% 8%;                   /* Dark input background */
-    --ring: 47 100% 60%;                /* Gold focus ring */
+    --ring: 25 65% 45%;                 /* Copper focus ring */
 
     --radius: 0.75rem;
 
     /* Custom luxury gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(47 100% 60%), hsl(43 100% 55%));
+    --gradient-copper: linear-gradient(135deg, hsl(25 65% 45%), hsl(25 65% 55%));
     --gradient-black: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 10%));
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 5%), hsl(0 0% 0%));
     
     /* Elegant shadows */
-    --shadow-luxury: 0 20px 40px -10px hsl(47 100% 60% / 0.3);
-    --shadow-gold: 0 0 30px hsl(47 100% 60% / 0.4);
+    --shadow-luxury: 0 20px 40px -10px hsl(25 65% 45% / 0.3);
+    --shadow-copper: 0 0 30px hsl(25 65% 45% / 0.4);
     --shadow-elegant: 0 10px 30px -5px hsl(0 0% 0% / 0.5);
 
     /* Animations */
@@ -157,7 +157,7 @@
 
   /* Text gradient for headings */
   .text-gold-gradient {
-    background: var(--gradient-gold);
+    background: var(--gradient-copper);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -166,6 +166,6 @@
   /* Navbar glass effect */
   .navbar-glass {
     @apply backdrop-blur-md bg-primary/95 border-b border-primary/20;
-    box-shadow: 0 4px 20px hsl(47 100% 60% / 0.3);
+    box-shadow: 0 4px 20px hsl(25 65% 45% / 0.3);
   }
 }
