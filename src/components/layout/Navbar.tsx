@@ -18,16 +18,15 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <NavLink to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-              <Building className="w-5 h-5 text-background" />
-            </div>
+          <NavLink to="/" className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/4d02151d-af32-42d8-96d8-7abbb94d6de1.png" 
+              alt="Mansa Luxe Realty"
+              className="h-10 w-auto"
+            />
             <div className="flex flex-col">
-              <span className="text-primary font-serif font-bold text-lg leading-tight">
-                MansaLuxeRealty
-              </span>
-              <span className="text-primary/70 text-xs leading-tight">
-                A MrDGNGroup Company
+              <span className="text-xs text-primary/60 font-medium tracking-wider uppercase">
+                A Premium MrDGNGroup Experience
               </span>
             </div>
           </NavLink>

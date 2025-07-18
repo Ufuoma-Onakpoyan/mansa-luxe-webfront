@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { 
   MapPin, Bed, Bath, Square, Filter, Search, 
   Building, Landmark, Home, Castle, Building2, DollarSign,
@@ -428,9 +429,11 @@ const Properties = () => {
 
                     {/* View Details Overlay */}
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                        View Details
-                      </button>
+                      <Link to={`/properties/${property.id}`}>
+                        <button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                          View Details
+                        </button>
+                      </Link>
                     </div>
                   </div>
                   
