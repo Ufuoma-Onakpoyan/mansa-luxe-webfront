@@ -46,16 +46,8 @@ const Properties = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const propertiesPerPage = 9;
 
-  // Get unique locations for filter dropdown
-  const locations = useMemo(() => {
-    const uniqueLocations = new Set<string>();
-    properties.forEach(property => {
-      // Extract city from location (assumes format "Area, City")
-      const city = property.location.split(',').pop()?.trim() || property.location;
-      uniqueLocations.add(city);
-    });
-    return Array.from(uniqueLocations).sort();
-  }, [properties]);
+  // Predefined locations
+  const locations = ['Abuja', 'Lagos', 'Asaba'];
 
   // Apply filters to properties
   const filteredProperties = useMemo(() => {
@@ -93,10 +85,10 @@ const Properties = () => {
         return false;
       }
 
-      // Featured filter - since featured doesn't exist, skip this filter
-      // if (filters.featured && !property.featured) {
-      //   return false;
-      // }
+      // Featured filter
+      if (filters.featured && !property.featured) {
+        return false;
+      }
 
       return true;
     });

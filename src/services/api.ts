@@ -17,6 +17,7 @@ export interface Property {
   features: string[] | null;
   year_built: number | null;
   agent: any | null;
+  featured: boolean | null;
   created_at: string;
   updated_at: string;
 }
@@ -40,6 +41,7 @@ class ApiService {
       .from('properties')
       .select('*')
       .eq('status', 'available')
+      .order('featured', { ascending: false })
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -103,8 +105,6 @@ class ApiService {
     const { data, error } = await supabase
       .from('testimonials')
       .select('*')
-      .eq('published', true)
-      .order('display_order', { ascending: true })
       .order('created_at', { ascending: false });
 
     if (error) {

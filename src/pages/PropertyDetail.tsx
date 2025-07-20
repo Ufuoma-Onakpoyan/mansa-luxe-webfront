@@ -94,11 +94,21 @@ const PropertyDetail = () => {
             <Card className="overflow-hidden luxury-card">
               <div className="relative h-[500px]">
                 {images.length > 0 ? (
-                  <img
-                    src={images[selectedImageIndex]}
-                    alt={property.title}
-                    className="w-full h-full object-contain bg-muted"
-                  />
+                  images[selectedImageIndex]?.includes('.mp4') || images[selectedImageIndex]?.includes('.mov') || images[selectedImageIndex]?.includes('.avi') ? (
+                    <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-center p-8">
+                      <PlayCircle className="w-16 h-16 text-primary mb-4" />
+                      <h3 className="text-xl font-semibold mb-2">Video Available</h3>
+                      <p className="text-muted-foreground">
+                        Please scroll down to the video section below to watch the property tour.
+                      </p>
+                    </div>
+                  ) : (
+                    <img
+                      src={images[selectedImageIndex]}
+                      alt={property.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )
                 ) : (
                   <div className="w-full h-full bg-muted flex items-center justify-center">
                     <span className="text-muted-foreground">No image available</span>
@@ -139,24 +149,28 @@ const PropertyDetail = () => {
               </div>
             )}
 
-            {/* Video Section - Show when current selected image is a video */}
-            {images.length > 0 && (images[selectedImageIndex]?.includes('.mp4') || images[selectedImageIndex]?.includes('.mov') || images[selectedImageIndex]?.includes('.avi')) && (
+            {/* Video Section - Show all videos available */}
+            {images.some(image => image?.includes('.mp4') || image?.includes('.mov') || image?.includes('.avi')) && (
               <Card className="overflow-hidden luxury-card">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-4">Property Video Tour</h3>
-                  <div className="relative h-96 bg-muted rounded-lg overflow-hidden">
-                    <video 
-                      className="w-full h-full object-contain" 
-                      controls
-                      preload="metadata"
-                      key={images[selectedImageIndex]} // Force re-render when video changes
-                    >
-                      <source 
-                        src={images[selectedImageIndex]} 
-                        type="video/mp4" 
-                      />
-                      Your browser does not support the video tag.
-                    </video>
+                  <h3 className="text-xl font-bold mb-4">Property Video Tours</h3>
+                  <div className="space-y-4">
+                    {images.filter(image => image?.includes('.mp4') || image?.includes('.mov') || image?.includes('.avi')).map((videoUrl, index) => (
+                      <div key={index} className="relative h-96 bg-muted rounded-lg overflow-hidden">
+                        <video 
+                          className="w-full h-full object-cover" 
+                          controls
+                          preload="metadata"
+                          playsInline
+                        >
+                          <source 
+                            src={videoUrl} 
+                            type="video/mp4" 
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
