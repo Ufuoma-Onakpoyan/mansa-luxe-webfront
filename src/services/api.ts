@@ -40,12 +40,27 @@ class ApiService {
     const { data, error } = await supabase
       .from('properties')
       .select('*')
-      .eq('status', 'available')
+      .in('status', ['available', 'sold'])
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching properties:', error);
+      throw error;
+    }
+
+    return data || [];
+  }
+
+  async getSoldProperties(): Promise<Property[]> {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('status', 'sold')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching sold properties:', error);
       throw error;
     }
 

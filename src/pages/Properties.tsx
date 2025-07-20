@@ -17,6 +17,7 @@ interface FilterState {
   priceRange: [number, number];
   type: string;
   featured: boolean;
+  status: string;
 }
 
 const initialFilterState: FilterState = {
@@ -26,6 +27,7 @@ const initialFilterState: FilterState = {
   priceRange: [0, 3000000000], // 0 to 3 billion Naira
   type: "all",
   featured: false,
+  status: "all",
 };
 
 // Price formatter to convert string price to number (remove currency symbol and commas)
@@ -87,6 +89,11 @@ const Properties = () => {
 
       // Featured filter
       if (filters.featured && !property.featured) {
+        return false;
+      }
+
+      // Status filter
+      if (filters.status !== "all" && property.status !== filters.status) {
         return false;
       }
 
@@ -208,7 +215,8 @@ const Properties = () => {
                   v !== initialFilterState.priceRange &&
                   v !== initialFilterState.featured &&
                   v !== initialFilterState.minBathrooms &&
-                  v !== initialFilterState.minBedrooms
+                  v !== initialFilterState.minBedrooms &&
+                  v !== initialFilterState.status
                 ) && (
                   <span className="ml-2 w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
                     !
@@ -223,7 +231,8 @@ const Properties = () => {
                 v !== initialFilterState.priceRange &&
                 v !== initialFilterState.featured &&
                 v !== initialFilterState.minBathrooms &&
-                v !== initialFilterState.minBedrooms
+                v !== initialFilterState.minBedrooms &&
+                v !== initialFilterState.status
               ) && (
                 <button
                   onClick={resetFilters}
@@ -313,8 +322,19 @@ const Properties = () => {
                   </div>
                 </div>
 
-                {/* Featured & Price Filter */}
+                {/* Status & Featured Filter */}
                 <div>
+                  <label className="block text-sm font-medium mb-2 text-muted-foreground">Property Status</label>
+                  <select
+                    className="w-full bg-background border border-border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+                    value={filters.status}
+                    onChange={(e) => setFilters({...filters, status: e.target.value})}
+                  >
+                    <option value="all">All Properties</option>
+                    <option value="available">Available</option>
+                    <option value="sold">Sold</option>
+                  </select>
+
                   <label className="block text-sm font-medium mb-2 text-muted-foreground">Show Featured Only</label>
                   <button
                     className={`w-full flex items-center justify-between px-4 py-2 rounded-lg border ${
@@ -399,7 +419,18 @@ const Properties = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {currentProperties.map((property) => (
                 <div key={property.id} className="luxury-card overflow-hidden group">
-                  {/* Remove featured check since it doesn't exist in database */}
+                  {/* Property Status Badge */}
+                  {property.status === 'sold' && (
+                    <div className="absolute top-4 left-4 z-10 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-medium">
+                      SOLD
+                    </div>
+                  )}
+                  {property.featured && (
+                    <div className="absolute top-4 right-4 z-10 bg-gold text-black px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
+                      <Star className="w-3 h-3 fill-current" />
+                      <span>Featured</span>
+                    </div>
+                  )}
                   
                   <div className="aspect-video bg-muted relative overflow-hidden">
                     {property.images && property.images.length > 0 ? (

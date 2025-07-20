@@ -81,8 +81,11 @@ const PropertyDetail = () => {
               Back to Properties
             </Button>
           </Link>
-          <Badge variant="secondary" className="text-lg px-4 py-2">
-            {property.status}
+          <Badge 
+            variant={property.status === 'sold' ? 'destructive' : 'secondary'} 
+            className="text-lg px-4 py-2"
+          >
+            {property.status.toUpperCase()}
           </Badge>
         </div>
 
