@@ -22,6 +22,7 @@ export type Database = {
           bedrooms: number | null
           created_at: string
           description: string | null
+          featured: boolean | null
           features: string[] | null
           id: string
           images: string[] | null
@@ -42,6 +43,7 @@ export type Database = {
           bedrooms?: number | null
           created_at?: string
           description?: string | null
+          featured?: boolean | null
           features?: string[] | null
           id?: string
           images?: string[] | null
@@ -62,6 +64,7 @@ export type Database = {
           bedrooms?: number | null
           created_at?: string
           description?: string | null
+          featured?: boolean | null
           features?: string[] | null
           id?: string
           images?: string[] | null
@@ -81,10 +84,12 @@ export type Database = {
         Row: {
           company: string | null
           created_at: string
+          display_order: number | null
           id: string
           name: string
           photo: string | null
           property_id: string | null
+          published: boolean | null
           quote: string
           rating: number | null
           role: string | null
@@ -93,10 +98,12 @@ export type Database = {
         Insert: {
           company?: string | null
           created_at?: string
+          display_order?: number | null
           id?: string
           name: string
           photo?: string | null
           property_id?: string | null
+          published?: boolean | null
           quote: string
           rating?: number | null
           role?: string | null
@@ -105,10 +112,12 @@ export type Database = {
         Update: {
           company?: string | null
           created_at?: string
+          display_order?: number | null
           id?: string
           name?: string
           photo?: string | null
           property_id?: string | null
+          published?: boolean | null
           quote?: string
           rating?: number | null
           role?: string | null

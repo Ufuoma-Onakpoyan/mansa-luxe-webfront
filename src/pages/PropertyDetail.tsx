@@ -97,19 +97,11 @@ const PropertyDetail = () => {
                   <img
                     src={images[selectedImageIndex]}
                     alt={property.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain bg-muted"
                   />
                 ) : (
                   <div className="w-full h-full bg-muted flex items-center justify-center">
                     <span className="text-muted-foreground">No image available</span>
-                  </div>
-                )}
-                {hasVideo && (
-                  <div className="absolute top-4 right-4">
-                    <Button size="sm" className="bg-black/50 hover:bg-black/70">
-                      <PlayCircle className="w-4 h-4 mr-2" />
-                      Play Video
-                    </Button>
                   </div>
                 )}
               </div>
@@ -118,54 +110,53 @@ const PropertyDetail = () => {
             {/* Thumbnail Gallery */}
             {images.length > 1 && (
               <div className="grid grid-cols-5 gap-2">
-                {images.map((image, index) => (
-                  <Card
-                    key={index}
-                    className={`overflow-hidden cursor-pointer transition-all duration-300 hover-scale ${
-                      selectedImageIndex === index
-                        ? "ring-2 ring-primary"
-                        : "hover:ring-1 hover:ring-primary/50"
-                    }`}
-                    onClick={() => setSelectedImageIndex(index)}
-                  >
-                    <img
-                      src={image}
-                      alt={`${property.title} ${index + 1}`}
-                      className="w-full h-20 object-cover"
-                    />
-                  </Card>
-                ))}
+                {images.slice(0, Math.min(images.length, 10)).map((image, index) => {
+                  const isVideo = image.includes('.mp4') || image.includes('.mov') || image.includes('.avi');
+                  return (
+                    <Card
+                      key={index}
+                      className={`overflow-hidden cursor-pointer transition-all duration-300 hover-scale ${
+                        selectedImageIndex === index
+                          ? "ring-2 ring-primary"
+                          : "hover:ring-1 hover:ring-primary/50"
+                      }`}
+                      onClick={() => setSelectedImageIndex(index)}
+                    >
+                      {!isVideo ? (
+                        <img
+                          src={image}
+                          alt={`${property.title} ${index + 1}`}
+                          className="w-full h-20 object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-20 bg-muted flex items-center justify-center">
+                          <PlayCircle className="w-6 h-6 text-primary" />
+                        </div>
+                      )}
+                    </Card>
+                  );
+                })}
               </div>
             )}
 
-            {/* Video Section */}
-            {hasVideo && (
+            {/* Video Section - Show when current selected image is a video */}
+            {images.length > 0 && (images[selectedImageIndex]?.includes('.mp4') || images[selectedImageIndex]?.includes('.mov') || images[selectedImageIndex]?.includes('.avi')) && (
               <Card className="overflow-hidden luxury-card">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-4">Property Video Tour</h3>
-                  <div className="relative h-64 bg-muted rounded-lg overflow-hidden">
-                    {property.images?.find(img => 
-                      img.includes('.mp4') || img.includes('.mov') || img.includes('.avi')
-                    ) ? (
-                      <video 
-                        className="w-full h-full object-cover" 
-                        controls
-                        preload="metadata"
-                      >
-                        <source 
-                          src={property.images.find(img => 
-                            img.includes('.mp4') || img.includes('.mov') || img.includes('.avi')
-                          )} 
-                          type="video/mp4" 
-                        />
-                        Your browser does not support the video tag.
-                      </video>
-                    ) : (
-                      <div className="flex items-center justify-center h-full">
-                        <PlayCircle className="w-16 h-16 text-muted-foreground" />
-                        <span className="ml-4 text-muted-foreground">Video will display here when available</span>
-                      </div>
-                    )}
+                  <div className="relative h-96 bg-muted rounded-lg overflow-hidden">
+                    <video 
+                      className="w-full h-full object-contain" 
+                      controls
+                      preload="metadata"
+                      key={images[selectedImageIndex]} // Force re-render when video changes
+                    >
+                      <source 
+                        src={images[selectedImageIndex]} 
+                        type="video/mp4" 
+                      />
+                      Your browser does not support the video tag.
+                    </video>
                   </div>
                 </CardContent>
               </Card>

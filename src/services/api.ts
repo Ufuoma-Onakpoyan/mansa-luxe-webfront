@@ -39,7 +39,8 @@ class ApiService {
     const { data, error } = await supabase
       .from('properties')
       .select('*')
-      .eq('status', 'available');
+      .eq('status', 'available')
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching properties:', error);
@@ -50,16 +51,34 @@ class ApiService {
   }
 
   async getFeaturedProperties(): Promise<Property[]> {
-    // Since 'featured' doesn't exist in DB, we'll return first 3 available properties
     const { data, error } = await supabase
       .from('properties')
       .select('*')
       .eq('status', 'available')
+      .eq('featured', true)
+      .order('created_at', { ascending: false })
       .limit(3);
 
     if (error) {
       console.error('Error fetching featured properties:', error);
       throw error;
+    }
+
+    // Fallback to latest 3 if no featured properties
+    if (!data || data.length === 0) {
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('status', 'available')
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+      if (fallbackError) {
+        console.error('Error fetching fallback properties:', error);
+        throw fallbackError;
+      }
+
+      return fallbackData || [];
     }
 
     return data || [];
@@ -83,7 +102,10 @@ class ApiService {
   async getTestimonials(): Promise<Testimonial[]> {
     const { data, error } = await supabase
       .from('testimonials')
-      .select('*');
+      .select('*')
+      .eq('published', true)
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching testimonials:', error);
