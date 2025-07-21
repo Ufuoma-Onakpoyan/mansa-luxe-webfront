@@ -99,10 +99,30 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center">
-          <p className="text-muted-foreground text-sm">
-            © 2024 MansaLuxeRealty - A MrDGNGroup Company. All rights reserved.
-          </p>
+        <div className="border-t border-border mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
+              <p className="text-muted-foreground text-sm">
+                © 2024 MansaLuxeRealty. All rights reserved.
+              </p>
+              <div className="flex items-center space-x-2">
+                <span className="text-muted-foreground text-xs">A subsidiary of</span>
+                <img 
+                  src="/lovable-uploads/dfadbc43-f447-4837-86f0-6d747e4e1cea.png" 
+                  alt="MR DGN GROUP" 
+                  className="h-5 md:h-6"
+                />
+              </div>
+            </div>
+            <div className="flex space-x-6">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                Privacy Policy
+              </a>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                Terms of Service
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
