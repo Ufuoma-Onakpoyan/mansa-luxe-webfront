@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Menu, X, Info, Building, Briefcase, MessageSquare, Phone } from "lucide-react";
+import { Menu, X, Info, Building, Briefcase, MessageSquare, Phone, User, LogOut } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut, isAdmin } = useAuth();
 
   const navItems = [
     { to: "/about", label: "About", icon: Info },
@@ -50,6 +59,33 @@ const Navbar = () => {
                 <span>{item.label}</span>
               </NavLink>
             ))}
+            
+            {/* Auth Section */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                    <User className="w-4 h-4" />
+                    <span className="text-sm">{user.email}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <NavLink to="/admin">Admin Dashboard</NavLink>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild variant="outline" size="sm">
+                <NavLink to="/auth">Admin Login</NavLink>
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -83,6 +119,47 @@ const Navbar = () => {
                   <span>{item.label}</span>
                 </NavLink>
               ))}
+              
+              {/* Mobile Auth Section */}
+              <div className="border-t border-primary/20 mt-4 pt-4">
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-3 px-4 py-2 text-primary/80">
+                      <User className="w-5 h-5" />
+                      <span className="text-sm">{user.email}</span>
+                    </div>
+                    {isAdmin && (
+                      <NavLink
+                        to="/admin"
+                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary/80 hover:text-primary hover:bg-primary/10 transition-all duration-300"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Building className="w-5 h-5" />
+                        <span>Admin Dashboard</span>
+                      </NavLink>
+                    )}
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setIsOpen(false);
+                      }}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary/80 hover:text-primary hover:bg-primary/10 transition-all duration-300 w-full text-left"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                ) : (
+                  <NavLink
+                    to="/auth"
+                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary/80 hover:text-primary hover:bg-primary/10 transition-all duration-300"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <User className="w-5 h-5" />
+                    <span>Admin Login</span>
+                  </NavLink>
+                )}
+              </div>
             </div>
           </div>
         )}
