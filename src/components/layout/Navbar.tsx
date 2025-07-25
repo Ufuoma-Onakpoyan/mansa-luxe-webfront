@@ -23,7 +23,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-primary/20">
+    <nav className="fixed top-0 left-0 right-0 z-50 navbar-glass">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -33,11 +33,6 @@ const Navbar = () => {
               alt="Mansa Luxe Realty"
               className="h-10 w-auto"
             />
-            <div className="flex flex-col">
-              <span className="text-xs text-primary/60 font-medium tracking-wider uppercase">
-                A Premium MrDGNGroup Experience
-              </span>
-            </div>
           </NavLink>
 
           {/* Desktop Navigation */}
@@ -48,10 +43,10 @@ const Navbar = () => {
                 to={item.to}
                 end={item.to === "/"}
                 className={({ isActive }) =>
-                  `flex items-center space-x-1 px-2 py-2 rounded-lg transition-all duration-300 ${
+                  `nav-link flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-300 ${
                     isActive
                       ? "bg-primary/20 text-primary font-semibold"
-                      : "text-primary/80 hover:text-primary hover:bg-primary/10"
+                      : "text-foreground/80 hover:text-primary hover:bg-primary/10"
                   }`
                 }
               >

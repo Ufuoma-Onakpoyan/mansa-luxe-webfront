@@ -124,35 +124,75 @@
 }
 
 @layer components {
-  /* Luxury button variants */
+  /* Enhanced luxury button variants */
   .btn-luxury {
-    @apply bg-gradient-to-r from-primary to-accent text-primary-foreground;
-    @apply px-8 py-4 rounded-lg font-semibold transition-all duration-300;
-    @apply hover:shadow-lg hover:scale-105 active:scale-95;
-    @apply shadow-[0_0_20px_hsl(var(--primary)/0.3)];
+    @apply relative overflow-hidden bg-gradient-to-r from-primary to-accent text-primary-foreground;
+    @apply px-8 py-4 rounded-xl font-semibold transition-all duration-500;
+    @apply hover:shadow-luxury hover:scale-105 active:scale-95;
+    @apply shadow-[0_0_25px_hsl(var(--primary)/0.4)];
+  }
+
+  .btn-luxury::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-accent to-primary opacity-0 transition-opacity duration-500;
+  }
+
+  .btn-luxury:hover::before {
+    @apply opacity-100;
   }
 
   .btn-outline-luxury {
     @apply border-2 border-primary text-primary bg-transparent;
-    @apply px-8 py-4 rounded-lg font-semibold transition-all duration-300;
-    @apply hover:bg-primary hover:text-primary-foreground hover:shadow-lg;
+    @apply px-8 py-4 rounded-xl font-semibold transition-all duration-500;
+    @apply hover:bg-primary hover:text-primary-foreground hover:shadow-luxury;
   }
 
-  /* Card with luxury styling */
+  /* Enhanced card with luxury styling */
   .luxury-card {
-    @apply bg-card border border-border rounded-lg;
-    @apply shadow-[0_10px_30px_-5px_hsl(0_0%_0%/0.3)];
-    @apply transition-all duration-300 hover:shadow-[0_20px_40px_-10px_hsl(47_100%_60%/0.3)];
-    @apply hover:-translate-y-1;
+    @apply relative bg-gradient-to-br from-card via-card to-card/90 border border-border/30 rounded-2xl;
+    @apply shadow-[0_15px_35px_-8px_hsl(0_0%_0%/0.4)] backdrop-blur-sm;
+    @apply transition-all duration-500 hover:shadow-luxury hover:-translate-y-2;
+    @apply overflow-hidden;
+  }
+
+  .luxury-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-500;
+  }
+
+  .luxury-card:hover::before {
+    @apply opacity-100;
+  }
+
+  .luxury-card:hover {
+    @apply border-primary/20;
+  }
+
+  /* Property card enhancements */
+  .property-card {
+    @apply luxury-card group cursor-pointer;
+  }
+
+  .property-card:hover .property-image {
+    @apply transform scale-110;
+  }
+
+  .property-image {
+    @apply transition-transform duration-700 ease-out object-cover;
+  }
+
+  /* Image aspect ratio containers */
+  .aspect-card {
+    @apply aspect-[4/3] overflow-hidden rounded-xl;
   }
 
   /* Hero section styling */
   .hero-section {
-    @apply min-h-screen flex items-center justify-center;
+    @apply min-h-screen flex items-center justify-center relative;
     @apply bg-gradient-to-br from-background via-secondary to-background;
     background-image: 
-      radial-gradient(circle at 20% 50%, hsl(47 100% 60% / 0.15) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, hsl(47 100% 60% / 0.1) 0%, transparent 50%);
+      radial-gradient(circle at 20% 50%, hsl(25 65% 45% / 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(25 65% 45% / 0.1) 0%, transparent 50%);
   }
 
   /* Text gradient for headings */
@@ -163,9 +203,73 @@
     -webkit-text-fill-color: transparent;
   }
 
-  /* Navbar glass effect */
+  /* Enhanced navbar glass effect */
   .navbar-glass {
-    @apply backdrop-blur-md bg-primary/95 border-b border-primary/20;
-    box-shadow: 0 4px 20px hsl(25 65% 45% / 0.3);
+    @apply backdrop-blur-xl bg-background/90 border-b border-primary/20;
+    box-shadow: 0 4px 20px hsl(25 65% 45% / 0.2);
+  }
+
+  /* Scroll reveal animations */
+  .scroll-reveal {
+    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+  }
+
+  .scroll-reveal.revealed {
+    @apply opacity-100 translate-y-0;
+  }
+
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:translate-y-[-4px];
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-copper;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+
+  /* Navbar hover effects */
+  .nav-link {
+    @apply relative overflow-hidden;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary transform scale-x-0 transition-transform duration-300 origin-left;
+  }
+
+  .nav-link:hover::after {
+    @apply scale-x-100;
+  }
+
+  /* Stagger animation delays */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+  .stagger-6 { animation-delay: 0.6s; }
+
+  /* Scrollbar styles */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Gallery and modal transitions */
+  .gallery-transition {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
   }
 }
