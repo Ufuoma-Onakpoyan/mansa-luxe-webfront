@@ -160,7 +160,7 @@ const Home = () => {
                   animation="fade-up" 
                   delay={index * 100}
                 >
-                  <Card className="property-card hover-lift">
+                  <Card className="property-card group hover-lift">
                     <div className="aspect-card overflow-hidden">
                       <img
                         src={property.images?.[0] || '/placeholder.svg'}

@@ -179,7 +179,7 @@
 
   /* Property card enhancements */
   .property-card {
-    @apply luxury-card group cursor-pointer;
+    @apply luxury-card cursor-pointer;
   }
 
   .property-card:hover .property-image {

@@ -99,7 +99,7 @@ const PropertyDetail = () => {
             {/* Main Image */}
             <RevealAnimation animation="fade-up">
               <Card className="overflow-hidden luxury-card cursor-pointer group">
-                <div 
+                <div
                   className="relative h-[500px]"
                   onClick={() => setIsGalleryOpen(true)}
                 >
