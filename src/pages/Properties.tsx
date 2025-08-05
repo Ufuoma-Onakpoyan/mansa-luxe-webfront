@@ -3,10 +3,14 @@ import { Link } from "react-router-dom";
 import { 
   MapPin, Bed, Bath, Square, Filter, Search, 
   Building, Landmark, Home, Castle, Building2, DollarSign,
-  SlidersHorizontal, Check, X, Loader2, AlertCircle, Star, Eye
+  SlidersHorizontal, Check, X, Loader2, AlertCircle, Star, Eye, ArrowRight
 } from "lucide-react";
 import { useProperties } from "@/hooks/useProperties";
 import { Property } from "@/services/api";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { RevealAnimation } from "@/components/ui/reveal-animation";
 
 // Property interface is now imported from services/api
 
@@ -172,17 +176,24 @@ const Properties = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-serif font-bold mb-6">
+      <section className="relative py-32 bg-gradient-to-br from-background via-secondary to-background overflow-hidden">
+        <div className="absolute inset-0 bg-luxury-pattern opacity-5"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-5xl mx-auto text-center">
+            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-8 leading-tight">
               Luxury <span className="text-gold-gradient">Properties</span>
             </h1>
-            <p className="text-xl text-muted-foreground">
-              Discover Nigeria's most prestigious residential and commercial properties.
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Discover Nigeria's most prestigious residential and commercial properties. 
+              Where extraordinary architecture meets exceptional lifestyle.
             </p>
           </div>
         </div>
+        
+        {/* Decorative elements */}
+        <div className="absolute top-20 left-10 w-3 h-3 bg-primary rounded-full animate-pulse opacity-60" />
+        <div className="absolute bottom-20 right-10 w-2 h-2 bg-accent rounded-full animate-pulse opacity-40" />
+        <div className="absolute top-1/2 right-20 w-1 h-1 bg-primary rounded-full animate-pulse opacity-80" />
       </section>
 
       {/* Filters Section */}
@@ -417,80 +428,89 @@ const Properties = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {currentProperties.map((property) => (
-                <div key={property.id} className="luxury-card overflow-hidden group">
-                  {/* Property Status Badge */}
-                  {property.status === 'sold' && (
-                    <div className="absolute top-4 left-4 z-10 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-medium">
-                      SOLD
-                    </div>
-                  )}
-                  {property.featured && (
-                    <div className="absolute top-4 right-4 z-10 bg-gold text-black px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
-                      <Star className="w-3 h-3 fill-current" />
-                      <span>Featured</span>
-                    </div>
-                  )}
-                  
-                  <div className="aspect-video bg-muted relative overflow-hidden">
-                    {property.images && property.images.length > 0 ? (
-                      <img
-                        src={property.images[0]}
-                        alt={property.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 w-full h-full flex items-center justify-center text-muted-foreground">
-                        <div className="text-center">
-                          <div className="w-16 h-16 bg-border rounded-full flex items-center justify-center mx-auto mb-2">
-                            {getPropertyIcon(property.property_type || 'apartment')}
+              {currentProperties.map((property, index) => (
+                <RevealAnimation 
+                  key={property.id} 
+                  animation="fade-up" 
+                  delay={index * 100}
+                >
+                  <Card className="luxury-card overflow-hidden group hover-lift cursor-pointer">
+                    {/* Property Status Badge */}
+                    {property.status === 'sold' && (
+                      <Badge className="absolute top-4 left-4 z-10 bg-destructive text-destructive-foreground">
+                        SOLD
+                      </Badge>
+                    )}
+                    {property.featured && (
+                      <Badge className="absolute top-4 right-4 z-10 bg-primary text-primary-foreground flex items-center space-x-1">
+                        <Star className="w-3 h-3 fill-current" />
+                        <span>Featured</span>
+                      </Badge>
+                    )}
+                    
+                    <div className="aspect-card bg-muted/20 relative overflow-hidden">
+                      {property.images && property.images.length > 0 ? (
+                        <img
+                          src={property.images[0]}
+                          alt={property.title}
+                          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 w-full h-full flex items-center justify-center text-muted-foreground">
+                          <div className="text-center">
+                            <div className="w-16 h-16 bg-border rounded-full flex items-center justify-center mx-auto mb-2">
+                              {getPropertyIcon(property.property_type || 'apartment')}
+                            </div>
+                            <p className="text-sm">{property.property_type?.charAt(0).toUpperCase() + property.property_type?.slice(1) || 'Property'}</p>
                           </div>
-                          <p className="text-sm">{property.property_type?.charAt(0).toUpperCase() + property.property_type?.slice(1) || 'Property'}</p>
+                        </div>
+                      )}
+
+                      {/* Enhanced View Details Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-6">
+                        <Link to={`/properties/${property.id}`} className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <Button size="lg" className="btn-luxury hover-scale shadow-xl">
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Details
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                    
+                    <CardContent className="p-6 space-y-4">
+                      <div className="flex items-start justify-between">
+                        <h3 className="text-xl font-serif font-bold line-clamp-2 flex-1 mr-4">{property.title}</h3>
+                        <div className="text-2xl font-bold text-gold-gradient whitespace-nowrap">
+                          ₦{property.price.toLocaleString()}
                         </div>
                       </div>
-                    )}
-
-                    {/* View Details Overlay */}
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Link to={`/properties/${property.id}`}>
-                        <button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                          View Details
-                        </button>
-                      </Link>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-xl font-serif font-semibold">{property.title}</h3>
-                      <span className="text-xl font-bold text-gold-gradient">₦{property.price.toLocaleString()}</span>
-                    </div>
-                    
-                    <div className="flex items-center space-x-1 text-muted-foreground mb-3">
-                      <MapPin className="w-4 h-4" />
-                      <span className="text-sm">{property.location}</span>
-                    </div>
-                    
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                      {property.description}
-                    </p>
-                    
-                    <div className="flex items-center justify-between text-sm text-muted-foreground border-t border-border pt-4">
-                      <div className="flex items-center space-x-1">
-                        <Bed className="w-4 h-4" />
-                        <span>{property.bedrooms || 'N/A'}</span>
+                      
+                      <div className="flex items-center space-x-2 text-muted-foreground">
+                        <MapPin className="w-4 h-4 text-primary" />
+                        <span className="text-sm">{property.location}</span>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Bath className="w-4 h-4" />
-                        <span>{property.bathrooms || 'N/A'}</span>
+                      
+                      <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
+                        {property.description}
+                      </p>
+                      
+                      <div className="flex items-center justify-between text-sm font-medium border-t border-border pt-4">
+                        <div className="flex items-center space-x-2 text-muted-foreground">
+                          <Bed className="w-4 h-4 text-primary" />
+                          <span>{property.bedrooms || 'N/A'}</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-muted-foreground">
+                          <Bath className="w-4 h-4 text-primary" />
+                          <span>{property.bathrooms || 'N/A'}</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-muted-foreground">
+                          <Square className="w-4 h-4 text-primary" />
+                          <span>{property.square_feet ? `${property.square_feet} sqft` : 'N/A'}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Square className="w-4 h-4" />
-                        <span>{property.square_feet ? `${property.square_feet} sqft` : 'N/A'}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                    </CardContent>
+                  </Card>
+                </RevealAnimation>
               ))}
             </div>
           )}
@@ -535,20 +555,25 @@ const Properties = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-secondary">
+      <section className="py-20 bg-gradient-to-br from-background via-secondary to-background">
         <div className="container mx-auto px-4">
-          <div className="luxury-card p-8 md:p-12 text-center">
-            <h2 className="text-3xl font-serif font-bold mb-6">
-              Can't Find What You're Looking For?
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-              Our team specializes in finding exclusive off-market properties that match your specific requirements. 
-              Let us help you discover your perfect luxury home.
-            </p>
-            <Link to="/contact" className="btn-luxury">
-              Contact Our Property Experts
-            </Link>
-          </div>
+          <RevealAnimation animation="fade-up">
+            <Card className="luxury-card p-8 md:p-12 text-center max-w-4xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
+                Can't Find What You're <span className="text-gold-gradient">Looking For</span>?
+              </h2>
+              <p className="text-muted-foreground text-lg md:text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
+                Our team specializes in finding exclusive off-market properties that match your specific requirements. 
+                Let us help you discover your perfect luxury home in Nigeria's most prestigious locations.
+              </p>
+              <Button asChild size="lg" className="btn-luxury hover-scale">
+                <Link to="/contact">
+                  Contact Our Property Experts
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
+              </Button>
+            </Card>
+          </RevealAnimation>
         </div>
       </section>
     </div>

@@ -165,7 +165,7 @@ const Home = () => {
                       <img
                         src={property.images?.[0] || '/placeholder.svg'}
                         alt={property.title}
-                        className="property-image w-full h-full object-cover"
+                        className="property-image w-full h-full object-contain bg-muted/20"
                       />
                       {property.featured && (
                         <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">

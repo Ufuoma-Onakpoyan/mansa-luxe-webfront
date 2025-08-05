@@ -117,7 +117,7 @@ const PropertyDetail = () => {
                         <img
                           src={images[selectedImageIndex]}
                           alt={property.title}
-                          className="property-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          className="property-image w-full h-full object-contain bg-muted/20 group-hover:scale-105 transition-transform duration-700"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-lg font-semibold bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm">
@@ -158,7 +158,7 @@ const PropertyDetail = () => {
                           <img
                             src={image}
                             alt={`${property.title} ${index + 1}`}
-                            className="w-full h-20 object-cover group-hover:scale-110 transition-transform duration-300"
+                            className="w-full h-20 object-contain bg-muted/20 group-hover:scale-110 transition-transform duration-300"
                           />
                         ) : (
                           <div className="w-full h-20 bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
@@ -180,8 +180,8 @@ const PropertyDetail = () => {
                   <div className="space-y-4">
                     {images.filter(image => image?.includes('.mp4') || image?.includes('.mov') || image?.includes('.avi')).map((videoUrl, index) => (
                       <div key={index} className="relative h-96 bg-muted rounded-lg overflow-hidden">
-                        <video 
-                          className="w-full h-full object-cover" 
+                         <video 
+                          className="w-full h-full object-contain bg-muted/20" 
                           controls
                           preload="metadata"
                           playsInline

@@ -126,7 +126,7 @@ export const ImageGallery = ({ images, isOpen, onClose, initialIndex = 0 }: Imag
                 <img
                   src={images[currentIndex]}
                   alt={`Gallery image ${currentIndex + 1}`}
-                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-fade-in"
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-fade-in bg-muted/10"
                 />
               )}
             </div>

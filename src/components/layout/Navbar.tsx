@@ -36,14 +36,14 @@ const Navbar = () => {
           </NavLink>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2 xl:space-x-4">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.to === "/"}
                 className={({ isActive }) =>
-                  `nav-link flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-300 ${
+                  `nav-link flex items-center space-x-1 px-2 xl:px-3 py-2 rounded-lg transition-all duration-300 text-sm xl:text-base ${
                     isActive
                       ? "bg-primary/20 text-primary font-semibold"
                       : "text-foreground/80 hover:text-primary hover:bg-primary/10"
@@ -51,41 +51,35 @@ const Navbar = () => {
                 }
               >
                 <item.icon className="w-4 h-4" />
-                <span>{item.label}</span>
+                <span className="hidden lg:inline">{item.label}</span>
               </NavLink>
             ))}
             
-            {/* Auth Section */}
-            {user ? (
+            {/* Auth Section - Only show for admins */}
+            {user && isAdmin && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="flex items-center space-x-2">
                     <User className="w-4 h-4" />
-                    <span className="text-sm">{user.email}</span>
+                    <span className="text-sm hidden lg:inline">{user.email}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <NavLink to="/admin">Admin Dashboard</NavLink>
-                    </DropdownMenuItem>
-                  )}
+                  <DropdownMenuItem asChild>
+                    <NavLink to="/admin">Admin Dashboard</NavLink>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={signOut}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <Button asChild variant="outline" size="sm">
-                <NavLink to="/auth">Admin Login</NavLink>
-              </Button>
             )}
           </div>
 
           {/* Mobile menu button */}
           <button
-            className="lg:hidden p-2 text-primary"
+            className="md:hidden p-2 text-primary"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -94,7 +88,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden absolute top-16 left-0 right-0 bg-background border-t border-primary/20 shadow-md">
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-t border-primary/20 shadow-md">
             <div className="container mx-auto px-4 py-4">
               {navItems.map((item) => (
                 <NavLink
@@ -115,24 +109,22 @@ const Navbar = () => {
                 </NavLink>
               ))}
               
-              {/* Mobile Auth Section */}
-              <div className="border-t border-primary/20 mt-4 pt-4">
-                {user ? (
+              {/* Mobile Auth Section - Only show for admins */}
+              {user && isAdmin && (
+                <div className="border-t border-primary/20 mt-4 pt-4">
                   <div className="space-y-2">
                     <div className="flex items-center space-x-3 px-4 py-2 text-primary/80">
                       <User className="w-5 h-5" />
                       <span className="text-sm">{user.email}</span>
                     </div>
-                    {isAdmin && (
-                      <NavLink
-                        to="/admin"
-                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary/80 hover:text-primary hover:bg-primary/10 transition-all duration-300"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Building className="w-5 h-5" />
-                        <span>Admin Dashboard</span>
-                      </NavLink>
-                    )}
+                    <NavLink
+                      to="/admin"
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary/80 hover:text-primary hover:bg-primary/10 transition-all duration-300"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Building className="w-5 h-5" />
+                      <span>Admin Dashboard</span>
+                    </NavLink>
                     <button
                       onClick={() => {
                         signOut();
@@ -144,17 +136,8 @@ const Navbar = () => {
                       <span>Sign Out</span>
                     </button>
                   </div>
-                ) : (
-                  <NavLink
-                    to="/auth"
-                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary/80 hover:text-primary hover:bg-primary/10 transition-all duration-300"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <User className="w-5 h-5" />
-                    <span>Admin Login</span>
-                  </NavLink>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         )}
