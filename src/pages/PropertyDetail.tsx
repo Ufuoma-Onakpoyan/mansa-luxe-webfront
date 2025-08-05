@@ -98,33 +98,23 @@ const PropertyDetail = () => {
           <div className="lg:col-span-2 space-y-4">
             {/* Main Image */}
             <RevealAnimation animation="fade-up">
-              <Card className="overflow-hidden luxury-card cursor-pointer group">
-                <div
-                  className="relative h-[500px]"
-                  onClick={() => setIsGalleryOpen(true)}
-                >
+              <Card className="overflow-hidden luxury-card">
+                <div className="relative h-[500px]">
                   {images.length > 0 ? (
                     images[selectedImageIndex]?.includes('.mp4') || images[selectedImageIndex]?.includes('.mov') || images[selectedImageIndex]?.includes('.avi') ? (
-                      <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-center p-8 group-hover:bg-muted/80 transition-colors">
-                        <PlayCircle className="w-16 h-16 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                        <h3 className="text-xl font-semibold mb-2">Click to View Video</h3>
+                      <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-center p-8">
+                        <PlayCircle className="w-16 h-16 text-primary mb-4" />
+                        <h3 className="text-xl font-semibold mb-2">Property Video Tour</h3>
                         <p className="text-muted-foreground">
-                          Property tour video available in gallery
+                          Video content available below
                         </p>
                       </div>
                     ) : (
-                      <div className="relative overflow-hidden h-full">
-                        <img
-                          src={images[selectedImageIndex]}
-                          alt={property.title}
-                          className="property-image w-full h-full object-contain bg-muted/20 group-hover:scale-105 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-lg font-semibold bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm">
-                            Click to open gallery
-                          </div>
-                        </div>
-                      </div>
+                      <img
+                        src={images[selectedImageIndex]}
+                        alt={property.title}
+                        className="property-image w-full h-full object-contain bg-muted/20"
+                      />
                     )
                   ) : (
                     <div className="w-full h-full bg-muted flex items-center justify-center">
@@ -144,25 +134,22 @@ const PropertyDetail = () => {
                     return (
                       <Card
                         key={index}
-                        className={`overflow-hidden cursor-pointer transition-all duration-300 hover-scale group ${
+                        className={`overflow-hidden cursor-pointer transition-all duration-300 hover-scale ${
                           selectedImageIndex === index
                             ? "ring-2 ring-primary"
                             : "hover:ring-1 hover:ring-primary/50"
                         }`}
-                        onClick={() => {
-                          setSelectedImageIndex(index);
-                          setIsGalleryOpen(true);
-                        }}
+                        onClick={() => setSelectedImageIndex(index)}
                       >
                         {!isVideo ? (
                           <img
                             src={image}
                             alt={`${property.title} ${index + 1}`}
-                            className="w-full h-20 object-contain bg-muted/20 group-hover:scale-110 transition-transform duration-300"
+                            className="w-full h-20 object-contain bg-muted/20 hover:scale-110 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="w-full h-20 bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
-                            <PlayCircle className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+                          <div className="w-full h-20 bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors">
+                            <PlayCircle className="w-6 h-6 text-primary hover:scale-110 transition-transform" />
                           </div>
                         )}
                       </Card>
@@ -327,13 +314,6 @@ const PropertyDetail = () => {
         </div>
       </div>
 
-      {/* Image Gallery Modal */}
-      <ImageGallery
-        images={images}
-        isOpen={isGalleryOpen}
-        onClose={() => setIsGalleryOpen(false)}
-        initialIndex={selectedImageIndex}
-      />
     </div>
   );
 };

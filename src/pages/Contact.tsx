@@ -182,56 +182,55 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                      Phone Number
-                    </label>
-                    <div className="flex">
-                      <select
-                        name="countryCode"
-                        value={formData.countryCode}
-                        onChange={handleInputChange}
-                        className="px-3 py-2 bg-background border border-border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary border-r-0"
-                      >
-                        {countryCodes.map((country) => (
-                          <option key={country.code} value={country.code}>
-                            {country.flag} {country.code}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="flex-1 px-4 py-2 bg-background border border-border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        placeholder="123 456 7890"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="propertyType" className="block text-sm font-medium mb-2">
-                      Property Type
-                    </label>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                    Phone Number
+                  </label>
+                  <div className="flex">
                     <select
-                      id="propertyType"
-                      name="propertyType"
-                      value={formData.propertyType}
+                      name="countryCode"
+                      value={formData.countryCode}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="px-3 py-2 bg-background border border-border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary border-r-0"
                     >
-                      <option value="">Select property type</option>
-                      <option value="apartment">Apartment</option>
-                      <option value="penthouse">Penthouse</option>
-                      <option value="villa">Villa</option>
-                      <option value="mansion">Mansion</option>
-                      <option value="duplex">Duplex</option>
-                      <option value="estate">Estate</option>
-                      <option value="commercial">Commercial</option>
+                      {countryCodes.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.flag} {country.code}
+                        </option>
+                      ))}
                     </select>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="flex-1 px-4 py-2 bg-background border border-border rounded-r-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="123 456 7890"
+                    />
                   </div>
+                </div>
+
+                <div>
+                  <label htmlFor="propertyType" className="block text-sm font-medium mb-2">
+                    Property Type
+                  </label>
+                  <select
+                    id="propertyType"
+                    name="propertyType"
+                    value={formData.propertyType}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="">Select property type</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="penthouse">Penthouse</option>
+                    <option value="villa">Villa</option>
+                    <option value="mansion">Mansion</option>
+                    <option value="duplex">Duplex</option>
+                    <option value="estate">Estate</option>
+                    <option value="commercial">Commercial</option>
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
