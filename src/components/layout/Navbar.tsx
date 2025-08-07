@@ -51,7 +51,7 @@ const Navbar = () => {
                 }
               >
                 <item.icon className="w-4 h-4" />
-                <span className="hidden lg:inline">{item.label}</span>
+                <span className="text-xs xl:text-sm">{item.label}</span>
               </NavLink>
             ))}
             
@@ -61,7 +61,7 @@ const Navbar = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="flex items-center space-x-2">
                     <User className="w-4 h-4" />
-                    <span className="text-sm hidden lg:inline">{user.email}</span>
+                    <span className="text-xs xl:text-sm">{user.email}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

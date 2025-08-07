@@ -246,52 +246,42 @@ const PropertyDetail = () => {
             </Card>
             </RevealAnimation>
 
-            {/* Description */}
+            {/* Enhanced Description with Features */}
             {property.description && (
               <RevealAnimation animation="slide-right" delay={200}>
                 <Card className="luxury-card">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-4">Description</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {property.description}
-                  </p>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-6">Property Description & Features</h3>
+                    
+                    {/* Main Description */}
+                    <div className="mb-6">
+                      <p className="text-muted-foreground leading-relaxed text-base">
+                        {property.description.split(',')[0].trim()}
+                      </p>
+                    </div>
+
+                    {/* Features Grid from Description */}
+                    {property.description.includes(',') && (
+                      <div>
+                        <h4 className="text-lg font-semibold mb-4 text-primary">Key Features</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {property.description
+                            .split(',')
+                            .slice(1)
+                            .filter(feature => feature.trim().length > 0)
+                            .map((feature, index) => (
+                              <div key={index} className="flex items-start space-x-3 p-3 bg-muted/20 rounded-lg hover:bg-muted/30 transition-colors">
+                                <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                                <span className="text-sm font-medium leading-relaxed">{feature.trim()}</span>
+                              </div>
+                            ))
+                          }
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </RevealAnimation>
-            )}
-
-            {/* Features */}
-            {property.features && property.features.length > 0 && (
-              <Card className="luxury-card">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-4">Features</h3>
-                  <div className="grid grid-cols-1 gap-2">
-                    {property.features.map((feature, index) => (
-                      <div key={index} className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <span className="text-sm">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Amenities */}
-            {property.amenities && property.amenities.length > 0 && (
-              <Card className="luxury-card">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-4">Amenities</h3>
-                  <div className="grid grid-cols-1 gap-2">
-                    {property.amenities.map((amenity, index) => (
-                      <div key={index} className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <span className="text-sm">{amenity}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
             )}
 
             {/* Contact */}

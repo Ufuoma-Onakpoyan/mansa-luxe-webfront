@@ -466,10 +466,10 @@ const Properties = () => {
                         </div>
                       )}
 
-                      {/* Enhanced View Details Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-6">
-                        <Link to={`/properties/${property.id}`} className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                          <Button size="lg" className="btn-luxury hover-scale shadow-xl">
+                      {/* Always Visible View Details Button */}
+                      <div className="absolute bottom-4 left-4 right-4 flex justify-center">
+                        <Link to={`/properties/${property.id}`}>
+                          <Button size="sm" className="bg-white/90 backdrop-blur-sm text-black hover:bg-white hover:text-black shadow-md border border-white/20">
                             <Eye className="w-4 h-4 mr-2" />
                             View Details
                           </Button>

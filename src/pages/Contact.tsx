@@ -233,41 +233,40 @@ const Contact = () => {
                   </select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="budget" className="block text-sm font-medium mb-2">
-                      Budget Range
-                    </label>
-                    <select
-                      id="budget"
-                      name="budget"
-                      value={formData.budget}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                      <option value="">Select budget range</option>
-                      <option value="under-200m">Under ₦200M</option>
-                      <option value="200m-500m">₦200M - ₦500M</option>
-                      <option value="500m-1b">₦500M - ₦1B</option>
-                      <option value="1b-2b">₦1B - ₦2B</option>
-                      <option value="over-2b">Over ₦2B</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                      Subject *
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      required
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Subject of your inquiry"
-                    />
-                  </div>
+                <div>
+                  <label htmlFor="budget" className="block text-sm font-medium mb-2">
+                    Budget Range
+                  </label>
+                  <select
+                    id="budget"
+                    name="budget"
+                    value={formData.budget}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="">Select budget range</option>
+                    <option value="under-200m">Under ₦200M</option>
+                    <option value="200m-500m">₦200M - ₦500M</option>
+                    <option value="500m-1b">₦500M - ₦1B</option>
+                    <option value="1b-2b">₦1B - ₦2B</option>
+                    <option value="over-2b">Over ₦2B</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="subject" className="block text-sm font-medium mb-2">
+                    Subject *
+                  </label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    required
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Subject of your inquiry"
+                  />
                 </div>
 
                 <div>
